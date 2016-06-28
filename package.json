@@ -21,7 +21,7 @@
   "bugs": {
     "url": "https://github.com/wraithgar/hapi-rate-limit/issues"
   },
-  "precommit": [
+  "pre-commit": [
     "lint"
   ],
   "homepage": "https://github.com/wraithgar/hapi-rate-limit#readme",
@@ -29,6 +29,10 @@
     "boom": "^3.2.2",
     "hoek": "^4.0.1"
   },
+  "files": [
+    "index.js",
+    "lib"
+  ],
   "devDependencies": {
     "catbox-memory": "^2.0.3",
     "code": "^3.0.1",
