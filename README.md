@@ -1,5 +1,8 @@
 # hapi-rate-limit
 
+CHANGE THE DEFAULTS they are completely arbitrary and mostly there to
+facilitated automated testing of this module
+
 This limits access to a given route three ways
 
 userLimit: number of total requests a user can make per period
@@ -15,12 +18,15 @@ both timeouts default to 10 minutes
 Add this to route config to override path limit for that route:
 
 ```javascript
-  plugins: {
-    'hapi-rate-limit': {
-      pathLimit: 2,
-      pathTimeout: 60000 // 1 minute
+    plugins: {
+        'hapi-rate-limit': {
+            pathLimit: 2,
+            pathCache: {
+                expiresIn: 120000 // 2 minutes
+            },
+            headers: false //Disable X-RateLimit headers
+        }
     }
-  }
 ```
 
 You can disable the `userLimit` or `pathLimit` for any given path with a
