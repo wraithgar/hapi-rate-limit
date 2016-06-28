@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "lab -f -dL",
-    "test": "lab -fL -t 100"
+    "test": "lab -fL -t 75"
   },
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
     "url": "https://github.com/wraithgar/hapi-rate-limit/issues"
   },
   "pre-commit": [
-    "lint"
+    "test"
   ],
   "homepage": "https://github.com/wraithgar/hapi-rate-limit#readme",
   "dependencies": {

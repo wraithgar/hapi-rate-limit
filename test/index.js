@@ -66,18 +66,4 @@ describe('hapi-rate-limit', () => {
         });
 
     });
-
-    it('defaults', () => {
-
-        const server = new Hapi.Server({
-            cache: { engine: require('catbox-memory') }
-        });
-
-        server.connection();
-        return server.register(HapiRateLimit).then(() => {
-
-            expect(true).to.be.true();
-        });
-
-    });
 });
