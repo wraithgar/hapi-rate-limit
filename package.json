@@ -1,0 +1,39 @@
+{
+  "name": "hapi-rate-limit",
+  "version": "1.0.0",
+  "description": "Rate limiting plugin for hapi",
+  "main": "index.js",
+  "scripts": {
+    "lint": "lab -f -dL",
+    "test": "lab -f -t 100"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/wraithgar/hapi-rate-limit.git"
+  },
+  "keywords": [
+    "hapi",
+    "rate",
+    "limit"
+  ],
+  "author": "Gar <gar+code@danger.computer>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wraithgar/hapi-rate-limit/issues"
+  },
+  "precommit": [
+    "lint"
+  ],
+  "homepage": "https://github.com/wraithgar/hapi-rate-limit#readme",
+  "dependencies": {
+    "boom": "^3.2.2",
+    "hoek": "^4.0.1"
+  },
+  "devDependencies": {
+    "catbox-memory": "^2.0.3",
+    "code": "^3.0.1",
+    "git-validate": "^2.1.4",
+    "hapi": "^13.4.1",
+    "lab": "^10.8.2"
+  }
+}
