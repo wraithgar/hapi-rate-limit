@@ -33,10 +33,10 @@ Defaults are given here
 - `pathLimit`: `50` number of total requests that can be made on a given path per period. Set to `false` to disable limiting requests per user.
 - `userCache`: Object with the following properties:
     *  `segment`: `hapi-rate-limit-user` Name of the cache segment to use for storing user rate limit info
-    * `expiresIn`: 600000` Time (in seconds) of period for `userLimit`
+    * `expiresIn`: `600000` Time (in seconds) of period for `userLimit`
 - `pathCache`: Object with the following properties:
 	- `segment`: `hapi-rate-limit-path` Name of the cache segment to use for storing path rate limit info
-	- `expiresIn`: 60000 Time (in seconds) of period for `pathLimit`
+	- `expiresIn`: `60000` Time (in seconds) of period for `pathLimit`
 - `headers`: `true` Whether or not to include headers in responses
 
 
