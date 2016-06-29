@@ -39,6 +39,9 @@ Defaults are given here
 	- `expiresIn`: `60000` Time (in seconds) of period for `pathLimit`
 - `headers`: `true` Whether or not to include headers in responses
 
+## Users
+
+A user is considered a single `remoteAddress` for routes that are unauthenticated. On authenticated routes it is the `id` attribute of the authenticated user.
 
 ## Headers
 
