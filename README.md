@@ -67,3 +67,7 @@ For instance, to disable `pathLimit` for a route you would add this to its `conf
         }
     }
 ```
+
+##
+
+License: MIT
