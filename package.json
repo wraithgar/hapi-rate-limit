@@ -1,6 +1,6 @@
 {
   "name": "hapi-rate-limit",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Rate limiting plugin for hapi",
   "main": "index.js",
   "scripts": {
