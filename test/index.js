@@ -18,7 +18,8 @@ describe('hapi-rate-limit', () => {
         before(() => {
 
             server = new Hapi.Server({
-                cache: { engine: require('catbox-memory') }
+                cache: { engine: require('catbox-memory') },
+                debug: false
             });
 
             server.connection();
@@ -183,6 +184,74 @@ describe('hapi-rate-limit', () => {
 
                     expect(userCount - res2.headers['x-ratelimit-userremaining']).to.equal(1);
                 });
+            });
+        });
+
+        it('bad data in path cache', (done) => {
+
+            const pathCache = server.cache({ segment: 'hapi-rate-limit-path', shared: true });
+            pathCache.set('/defaults', 'replaced', 10000, (err) => {
+
+                expect(err).to.not.exist();
+                pathCache._cache.connection.cache['hapi-rate-limit-path']['/defaults'] = '{bad json}';
+
+                server.inject({ method: 'GET', url: '/defaults' }, (res) => {
+
+                    expect(res.statusCode).to.equal(500);
+                    pathCache.set('/defaults', 0, 10000, (err) => {
+
+                        expect(err).to.not.exist();
+                        done();
+                    });
+                });
+            });
+        });
+
+        it('path cache full', (done) => {
+
+            const pathCache = server.cache({ segment: 'hapi-rate-limit-path', shared: true });
+            const cacheSize = pathCache._cache.connection.settings.maxByteSize;
+            pathCache._cache.connection.settings.maxByteSize = 10;
+
+            server.inject({ method: 'GET', url: '/defaults' }, (res) => {
+
+                expect(res.statusCode).to.equal(500);
+                pathCache._cache.connection.settings.maxByteSize = cacheSize;
+                done();
+            });
+        });
+
+        it('bad data in user cache', (done) => {
+
+            const userCache = server.cache({ segment: 'hapi-rate-limit-user', shared: true });
+            userCache.set('127.0.0.1', 'asdf', 10000, (err) => {
+
+                expect(err).to.not.exist();
+                userCache._cache.connection.cache['hapi-rate-limit-user']['127.0.0.1'] = '{bad json}';
+
+                server.inject({ method: 'GET', url: '/defaults' }, (res) => {
+
+                    expect(res.statusCode).to.equal(500);
+                    userCache.set('127.0.0.1', 0, 10000, (err) => {
+
+                        expect(err).to.not.exist();
+                        done();
+                    });
+                });
+            });
+        });
+
+        it('user cache full', (done) => {
+
+            const userCache = server.cache({ segment: 'hapi-rate-limit-user', shared: true });
+            const cacheSize = userCache._cache.connection.settings.maxByteSize;
+            userCache._cache.connection.settings.maxByteSize = 10;
+
+            server.inject({ method: 'GET', url: '/noPathLimit' }, (res) => {
+
+                expect(res.statusCode).to.equal(500);
+                userCache._cache.connection.settings.maxByteSize = cacheSize;
+                done();
             });
         });
     });
