@@ -1,5 +1,7 @@
 'use strict';
 
+const Boom = require('boom');
+
 module.exports = [{
     method: 'GET',
     path: '/defaults',
@@ -21,6 +23,16 @@ module.exports = [{
         },
         auth: {
             strategy: 'trusty'
+        }
+    }
+}, {
+    method: 'GET',
+    path: '/notfound',
+    config: {
+        description: 'Route that returns a 404',
+        handler: (request, reply) => {
+
+            return reply(Boom.notFound());
         }
     }
 }, {

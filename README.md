@@ -3,6 +3,8 @@
 CHANGE THE DEFAULTS they are completely arbitrary and mostly there to
 facilitated automated testing of this module
 
+Note about handler-generated 404s
+
 This limits access to a given route three ways
 
 userLimit: number of total requests a user can make per period
