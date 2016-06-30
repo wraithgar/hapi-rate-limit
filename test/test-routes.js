@@ -176,4 +176,22 @@ module.exports = [{
             }
         }
     }
+}, {
+    method: 'GET',
+    path: '/userWhitelist',
+    config: {
+        description: 'Route with a userWhitelist',
+        handler: (request, reply) => {
+
+            return reply(request.path);
+        },
+        plugins: {
+            'hapi-rate-limit': {
+                userWhitelist: ['1']
+            }
+        },
+        auth: {
+            strategy: 'trusty'
+        }
+    }
 }];

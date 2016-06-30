@@ -146,7 +146,7 @@ describe('hapi-rate-limit', () => {
             });
         });
 
-        it('route set pathLimit', () => {
+        it('route configured pathLimit', () => {
 
             return server.inject({ method: 'GET', url: '/setPathLimit' }).then((res1) => {
 
@@ -191,7 +191,7 @@ describe('hapi-rate-limit', () => {
             });
         });
 
-        it('route set no headers', () => {
+        it('route configured no headers', () => {
 
             return server.inject({ method: 'GET', url: '/noHeaders' }).then((res) => {
 
@@ -289,7 +289,7 @@ describe('hapi-rate-limit', () => {
             });
         });
 
-        it('route set trustProxy', () => {
+        it('route configured trustProxy', () => {
 
             return server.inject({ method: 'GET', url: '/trustProxy', headers: { 'x-forwarded-for': '127.0.0.2, 127.0.0.1' } }).then((res1) => {
 
@@ -305,7 +305,7 @@ describe('hapi-rate-limit', () => {
             });
         });
 
-        it('route set ipWhitelist', () => {
+        it('route configured ipWhitelist', () => {
 
             return server.inject({ method: 'GET', url: '/ipWhitelist', headers: { 'x-forwarded-for': '127.0.0.2, 127.0.0.1' } }).then((res) => {
 
@@ -313,6 +313,25 @@ describe('hapi-rate-limit', () => {
                 expect(res.headers).to.not.include(['x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset']);
             });
         });
+
+        it('route configured userWhitelist', () => {
+
+            return server.inject({ method: 'GET', url: '/userWhitelist?id=1' }).then((res1) => {
+
+                expect(res1.headers).to.include(['x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset']);
+                expect(res1.headers).to.not.include(['x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset']);
+
+                return server.inject({ method: 'GET', url: '/userWhitelist?id=2' }).then((res2) => {
+
+                    expect(res2.headers).to.include([
+                        'x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset',
+                        'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset'
+                    ]);
+                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(300);
+                });
+            });
+        });
+
     });
 
     describe('configured user limit', () => {
