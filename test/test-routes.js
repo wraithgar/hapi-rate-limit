@@ -161,4 +161,19 @@ module.exports = [{
             }
         }
     }
+}, {
+    method: 'GET',
+    path: '/ipWhitelist',
+    config: {
+        description: 'Route with an ipWhitelist',
+        handler: (request, reply) => {
+
+            return reply(request.path);
+        },
+        plugins: {
+            'hapi-rate-limit': {
+                ipWhitelist: ['127.0.0.1']
+            }
+        }
+    }
 }];

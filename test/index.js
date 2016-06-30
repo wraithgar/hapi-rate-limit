@@ -304,6 +304,15 @@ describe('hapi-rate-limit', () => {
                 });
             });
         });
+
+        it('route set ipWhitelist', () => {
+
+            return server.inject({ method: 'GET', url: '/ipWhitelist', headers: { 'x-forwarded-for': '127.0.0.2, 127.0.0.1' } }).then((res) => {
+
+                expect(res.headers).to.include(['x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset']);
+                expect(res.headers).to.not.include(['x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset']);
+            });
+        });
     });
 
     describe('configured user limit', () => {
