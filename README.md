@@ -1,6 +1,7 @@
 # hapi-rate-limit
 
 [![Build Status](https://travis-ci.org/wraithgar/hapi-rate-limit.svg?branch=master)](http://travis-ci.org/wraithgar/hapi-rate-limit)
+[![NSP Status](https://nodesecurity.io/orgs/wraithgar/projects/115aa00d-9d08-4800-9a8b-865e721c84de/badge)](https://nodesecurity.io/orgs/wraithgar/projects/115aa00d-9d08-4800-9a8b-865e721c84de)
 
 Lead Maintainer: [Gar](https://github.com/wraithgar)
 
