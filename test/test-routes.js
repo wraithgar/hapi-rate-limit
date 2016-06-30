@@ -161,4 +161,37 @@ module.exports = [{
             }
         }
     }
+}, {
+    method: 'GET',
+    path: '/ipWhitelist',
+    config: {
+        description: 'Route with an ipWhitelist',
+        handler: (request, reply) => {
+
+            return reply(request.path);
+        },
+        plugins: {
+            'hapi-rate-limit': {
+                ipWhitelist: ['127.0.0.1']
+            }
+        }
+    }
+}, {
+    method: 'GET',
+    path: '/userWhitelist',
+    config: {
+        description: 'Route with a userWhitelist',
+        handler: (request, reply) => {
+
+            return reply(request.path);
+        },
+        plugins: {
+            'hapi-rate-limit': {
+                userWhitelist: ['1']
+            }
+        },
+        auth: {
+            strategy: 'trusty'
+        }
+    }
 }];
