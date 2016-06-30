@@ -40,14 +40,25 @@ Defaults are given here
 	- `segment`: `hapi-rate-limit-path` Name of the cache segment to use for storing path rate limit info
 	- `expiresIn`: `60000` Time (in seconds) of period for `pathLimit`
 - `headers`: `true` Whether or not to include headers in responses
+- `trustProxy`: `false` If true, honor the `X-Forwarded-For` header. See note below.
 
 ## Users
 
 A user is considered a single `remoteAddress` for routes that are unauthenticated. On authenticated routes it is the `userAtribute` (default `id`) of the authenticated user.
 
-## Headers
+If `trustProxy` is true, the address from the `X-Forwarded-For` header will be use instead of `remoteAddress`, if present
 
-The following headers will be included if their respective limits are enabled
+## Proxies
+
+If you set `trustProxy` to true, make sure that your proxy server is the only thing that can access the server, and be sure to configure your proxy to strip all incoming `X-Forwarded-For` headers.
+
+For example if you were using [haproxy](http://www.haproxy.org) you would add `reqidel ^X-Forwarded-For` to your config.
+
+Failure to do this would allow anyone to spoof that header to bypass your rate limiting.
+
+## Response Headers
+
+The following headers will be included in server responses if their respective limits are enabled
 
 - `x-ratelimit-pathlimit`: Will equal `pathLimit`
 - `x-ratelimit-pathremaining`: Remaining number of requests path has this - period

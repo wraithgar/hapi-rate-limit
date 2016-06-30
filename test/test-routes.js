@@ -146,4 +146,19 @@ module.exports = [{
             }
         }
     }
+}, {
+    method: 'GET',
+    path: '/trustProxy',
+    config: {
+        description: 'Route with trustProxy set',
+        handler: (request, reply) => {
+
+            return reply(request.path);
+        },
+        plugins: {
+            'hapi-rate-limit': {
+                trustProxy: true
+            }
+        }
+    }
 }];

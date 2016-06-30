@@ -288,6 +288,22 @@ describe('hapi-rate-limit', () => {
                 done();
             });
         });
+
+        it('route set trustProxy', () => {
+
+            return server.inject({ method: 'GET', url: '/trustProxy', headers: { 'x-forwarded-for': '127.0.0.2, 127.0.0.1' } }).then((res1) => {
+
+                expect(res1.headers['x-ratelimit-userremaining']).to.equal(300);
+                return server.inject({ method: 'GET', url: '/trustProxy', headers: { 'x-forwarded-for': '127.0.0.2, 127.0.0.1' } }).then((res2) => {
+
+                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(299);
+                    return server.inject({ method: 'GET', url: '/trustProxy' }).then((res3) => {
+
+                        expect(res3.headers['x-ratelimit-userremaining']).to.equal(300);
+                    });
+                });
+            });
+        });
     });
 
     describe('configured user limit', () => {
