@@ -27,6 +27,24 @@ module.exports = [{
     }
 }, {
     method: 'GET',
+    path: '/authName',
+    config: {
+        description: 'Authenticated route with name set as the userAttribute',
+        handler: (request, reply) => {
+
+            return reply(request.path);
+        },
+        plugins: {
+            'hapi-rate-limit': {
+                userAttribute: 'name'
+            }
+        },
+        auth: {
+            strategy: 'trusty'
+        }
+    }
+}, {
+    method: 'GET',
     path: '/notfound',
     config: {
         description: 'Route that returns a 404',

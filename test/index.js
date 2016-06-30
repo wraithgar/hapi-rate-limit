@@ -28,7 +28,7 @@ describe('hapi-rate-limit', () => {
                 return {
                     authenticate: function (request, reply) {
 
-                        reply.continue({ credentials: { id: request.query.id } });
+                        reply.continue({ credentials: { id: request.query.id, name: request.query.name } });
                     }
                 };
             });
@@ -87,6 +87,23 @@ describe('hapi-rate-limit', () => {
 
                     expect(res2.headers['x-ratelimit-userremaining']).to.equal(299);
                     return server.inject({ method: 'GET', url: '/auth?id=2' }).then((res3) => {
+
+                        expect(res3.headers['x-ratelimit-userremaining']).to.equal(300);
+                    });
+                });
+            });
+        });
+
+        it('route configured user attribute', () => {
+
+            return server.inject({ method: 'GET', url: '/authName?id=1&name=foo' }).then((res1) => {
+
+                expect(res1.headers['x-ratelimit-userremaining']).to.equal(300);
+
+                return server.inject({ method: 'GET', url: '/authName?id=1&name=foo' }).then((res2) => {
+
+                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(299);
+                    return server.inject({ method: 'GET', url: '/authName?id=1&name=bar' }).then((res3) => {
 
                         expect(res3.headers['x-ratelimit-userremaining']).to.equal(300);
                     });
@@ -272,7 +289,7 @@ describe('hapi-rate-limit', () => {
                 return {
                     authenticate: function (request, reply) {
 
-                        reply.continue({ credentials: { id: request.query.id } });
+                        reply.continue({ credentials: { id: request.query.id, name: request.query.name } });
                     }
                 };
             });
