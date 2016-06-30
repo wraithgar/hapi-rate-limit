@@ -27,6 +27,24 @@ module.exports = [{
     }
 }, {
     method: 'GET',
+    path: '/addressOnly',
+    config: {
+        description: 'Authenticated route with addressOnly set',
+        handler: (request, reply) => {
+
+            return reply(request.path);
+        },
+        plugins: {
+            'hapi-rate-limit': {
+                addressOnly: true
+            }
+        },
+        auth: {
+            strategy: 'trusty'
+        }
+    }
+}, {
+    method: 'GET',
     path: '/authName',
     config: {
         description: 'Authenticated route with name set as the userAttribute',

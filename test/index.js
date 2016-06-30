@@ -2,7 +2,7 @@
 
 const lab = exports.lab = require('lab').script();
 const expect = require('code').expect;
-const before = lab.before;
+const beforeEach = lab.beforeEach;
 const describe = lab.describe;
 const it = lab.it;
 
@@ -15,7 +15,7 @@ describe('hapi-rate-limit', () => {
 
         let server;
 
-        before(() => {
+        beforeEach(() => {
 
             server = new Hapi.Server({
                 cache: { engine: require('catbox-memory') },
@@ -106,6 +106,23 @@ describe('hapi-rate-limit', () => {
                     return server.inject({ method: 'GET', url: '/authName?id=1&name=bar' }).then((res3) => {
 
                         expect(res3.headers['x-ratelimit-userremaining']).to.equal(300);
+                    });
+                });
+            });
+        });
+
+        it('route configured addressOnly', () => {
+
+            return server.inject({ method: 'GET', url: '/addressOnly?id=3' }).then((res1) => {
+
+                expect(res1.headers['x-ratelimit-userremaining']).to.equal(300);
+
+                return server.inject({ method: 'GET', url: '/addressOnly?id=3' }).then((res2) => {
+
+                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(299);
+                    return server.inject({ method: 'GET', url: '/addressOnly?id=4' }).then((res3) => {
+
+                        expect(res3.headers['x-ratelimit-userremaining']).to.equal(298);
                     });
                 });
             });
@@ -277,7 +294,7 @@ describe('hapi-rate-limit', () => {
 
         let server;
 
-        before(() => {
+        beforeEach(() => {
 
             server = new Hapi.Server({
                 cache: { engine: require('catbox-memory') }
