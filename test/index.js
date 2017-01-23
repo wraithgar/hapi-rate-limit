@@ -54,12 +54,12 @@ describe('hapi-rate-limit', () => {
                 ]);
                 expect(res1.headers['x-ratelimit-pathlimit']).to.equal(50);
                 expect(res1.headers['x-ratelimit-pathremaining']).to.equal(50);
-                expect(res1.headers['x-ratelimit-pathreset']).to.be.a.date();
-                expect(res1.headers['x-ratelimit-pathreset'] - new Date()).to.be.within(59900, 60100);
+                expect(res1.headers['x-ratelimit-pathreset']).to.be.a.number();
+                expect(res1.headers['x-ratelimit-pathreset'] - Date.now()).to.be.within(59900, 60100);
                 expect(res1.headers['x-ratelimit-userlimit']).to.equal(300);
                 expect(res1.headers['x-ratelimit-userremaining']).to.equal(300);
-                expect(res1.headers['x-ratelimit-userreset']).to.be.a.date();
-                expect(res1.headers['x-ratelimit-userreset'] - new Date()).to.be.within(599900, 600100);
+                expect(res1.headers['x-ratelimit-userreset']).to.be.a.number();
+                expect(res1.headers['x-ratelimit-userreset'] - Date.now()).to.be.within(599900, 600100);
 
                 return server.inject({ method: 'GET', url: '/defaults' }).then((res2) => {
 
@@ -158,8 +158,8 @@ describe('hapi-rate-limit', () => {
                 ]);
                 expect(res1.headers['x-ratelimit-pathlimit']).to.equal(50);
                 expect(res1.headers['x-ratelimit-pathremaining']).to.equal(50);
-                expect(res1.headers['x-ratelimit-pathreset']).to.be.a.date();
-                expect(res1.headers['x-ratelimit-pathreset'] - new Date()).to.be.within(59900, 60100);
+                expect(res1.headers['x-ratelimit-pathreset']).to.be.a.number();
+                expect(res1.headers['x-ratelimit-pathreset'] - Date.now()).to.be.within(59900, 60100);
 
                 return server.inject({ method: 'GET', url: '/setPathLimit' }).then((res2) => {
 

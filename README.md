@@ -33,14 +33,14 @@ Defaults are given here
 - `userLimit`: `300` number of total requests a user can make per period.  Set to `false` to disable limiting requests per user.
 - `userCache`: Object with the following properties:
     -  `segment`: `hapi-rate-limit-user` Name of the cache segment to use for storing user rate limit info
-    - `expiresIn`: `600000` Time (in seconds) of period for `userLimit`
+    - `expiresIn`: `600000` Time (in milliseconds) of period for `userLimit`
 - `userAttribute`: `id` credentials attribute to use when determining distinct authenticated users
 - `userWhitelist`: `[]` array of users (as defined by `userAttribute` for whom to bypass rate limiting.  This is only applied to authenticated users, for ip whitelisting use `ipWhitelist`.
 - `addressOnly`: `false` if true, only consider user address when determining distinct authenticated users
 - `pathLimit`: `50` number of total requests that can be made on a given path per period.  Set to `false` to disable limiting requests per user.
 - `pathCache`: Object with the following properties:
 	- `segment`: `hapi-rate-limit-path` Name of the cache segment to use for storing path rate limit info
-	- `expiresIn`: `60000` Time (in seconds) of period for `pathLimit`
+	- `expiresIn`: `60000` Time (in milliseconds) of period for `pathLimit`
 - `headers`: `true` Whether or not to include headers in responses
 - `ipWhitelist`: `[]` array of IPs for whom to bypass rate limiting.  Note that a whitelisted IP would also bypass restrictions an authenticated user would otherwise have.
 - `trustProxy`: `false` If true, honor the `X-Forwarded-For` header.  See note below.
@@ -65,10 +65,10 @@ The following headers will be included in server responses if their respective l
 
 - `x-ratelimit-pathlimit`: Will equal `pathLimit`
 - `x-ratelimit-pathremaining`: Remaining number of requests path has this - period
-- `x-ratelimit-pathreset`: Time (in seconds) until reset of `pathLimit` period
+- `x-ratelimit-pathreset`: Time (in milliseconds) until reset of `pathLimit` period
 - `x-ratelimit-userlimit`: Will equal `userLimit`
 - `x-ratelimit-userremaining`: Remaining number of requests user has this period
-- `x-ratelimit-userreset`: Time (in seconds) until reset of `userLimit` period
+- `x-ratelimit-userreset`: Time (in milliseconds) until reset of `userLimit` period
 
 ## Per-route settings
 
