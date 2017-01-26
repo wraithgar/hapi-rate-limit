@@ -53,11 +53,11 @@ describe('hapi-rate-limit', () => {
                     'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset'
                 ]);
                 expect(res1.headers['x-ratelimit-pathlimit']).to.equal(50);
-                expect(res1.headers['x-ratelimit-pathremaining']).to.equal(50);
+                expect(res1.headers['x-ratelimit-pathremaining']).to.equal(49);
                 expect(res1.headers['x-ratelimit-pathreset']).to.be.a.number();
                 expect(res1.headers['x-ratelimit-pathreset'] - Date.now()).to.be.within(59900, 60100);
                 expect(res1.headers['x-ratelimit-userlimit']).to.equal(300);
-                expect(res1.headers['x-ratelimit-userremaining']).to.equal(300);
+                expect(res1.headers['x-ratelimit-userremaining']).to.equal(299);
                 expect(res1.headers['x-ratelimit-userreset']).to.be.a.number();
                 expect(res1.headers['x-ratelimit-userreset'] - Date.now()).to.be.within(599900, 600100);
 
@@ -68,10 +68,10 @@ describe('hapi-rate-limit', () => {
                         'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset'
                     ]);
                     expect(res2.headers['x-ratelimit-pathlimit']).to.equal(50);
-                    expect(res2.headers['x-ratelimit-pathremaining']).to.equal(49);
+                    expect(res2.headers['x-ratelimit-pathremaining']).to.equal(48);
                     expect(res2.headers['x-ratelimit-pathreset'] - pathReset).to.be.within(-100, 100);
                     expect(res2.headers['x-ratelimit-userlimit']).to.equal(300);
-                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(299);
+                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(298);
                     expect(res2.headers['x-ratelimit-userreset'] - userReset).to.be.within(-100, 100);
                 });
             });
@@ -81,14 +81,14 @@ describe('hapi-rate-limit', () => {
 
             return server.inject({ method: 'GET', url: '/auth?id=1' }).then((res1) => {
 
-                expect(res1.headers['x-ratelimit-userremaining']).to.equal(300);
+                expect(res1.headers['x-ratelimit-userremaining']).to.equal(299);
 
                 return server.inject({ method: 'GET', url: '/auth?id=1' }).then((res2) => {
 
-                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(299);
+                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(298);
                     return server.inject({ method: 'GET', url: '/auth?id=2' }).then((res3) => {
 
-                        expect(res3.headers['x-ratelimit-userremaining']).to.equal(300);
+                        expect(res3.headers['x-ratelimit-userremaining']).to.equal(299);
                     });
                 });
             });
@@ -98,14 +98,14 @@ describe('hapi-rate-limit', () => {
 
             return server.inject({ method: 'GET', url: '/authName?id=1&name=foo' }).then((res1) => {
 
-                expect(res1.headers['x-ratelimit-userremaining']).to.equal(300);
+                expect(res1.headers['x-ratelimit-userremaining']).to.equal(299);
 
                 return server.inject({ method: 'GET', url: '/authName?id=1&name=foo' }).then((res2) => {
 
-                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(299);
+                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(298);
                     return server.inject({ method: 'GET', url: '/authName?id=1&name=bar' }).then((res3) => {
 
-                        expect(res3.headers['x-ratelimit-userremaining']).to.equal(300);
+                        expect(res3.headers['x-ratelimit-userremaining']).to.equal(299);
                     });
                 });
             });
@@ -115,14 +115,14 @@ describe('hapi-rate-limit', () => {
 
             return server.inject({ method: 'GET', url: '/addressOnly?id=3' }).then((res1) => {
 
-                expect(res1.headers['x-ratelimit-userremaining']).to.equal(300);
+                expect(res1.headers['x-ratelimit-userremaining']).to.equal(299);
 
                 return server.inject({ method: 'GET', url: '/addressOnly?id=3' }).then((res2) => {
 
-                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(299);
+                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(298);
                     return server.inject({ method: 'GET', url: '/addressOnly?id=4' }).then((res3) => {
 
-                        expect(res3.headers['x-ratelimit-userremaining']).to.equal(298);
+                        expect(res3.headers['x-ratelimit-userremaining']).to.equal(297);
                     });
                 });
             });
@@ -157,7 +157,7 @@ describe('hapi-rate-limit', () => {
                     'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset'
                 ]);
                 expect(res1.headers['x-ratelimit-pathlimit']).to.equal(50);
-                expect(res1.headers['x-ratelimit-pathremaining']).to.equal(50);
+                expect(res1.headers['x-ratelimit-pathremaining']).to.equal(49);
                 expect(res1.headers['x-ratelimit-pathreset']).to.be.a.number();
                 expect(res1.headers['x-ratelimit-pathreset'] - Date.now()).to.be.within(59900, 60100);
 
@@ -168,7 +168,7 @@ describe('hapi-rate-limit', () => {
                         'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset'
                     ]);
                     expect(res2.headers['x-ratelimit-pathlimit']).to.equal(50);
-                    expect(res2.headers['x-ratelimit-pathremaining']).to.equal(49);
+                    expect(res2.headers['x-ratelimit-pathremaining']).to.equal(48);
                     expect(res2.headers['x-ratelimit-pathreset'] - pathReset).to.be.within(-100, 100);
                 });
             });
@@ -178,11 +178,11 @@ describe('hapi-rate-limit', () => {
 
             return server.inject({ method: 'GET', url: '/lowPathLimit' }).then((res1) => {
 
-                expect(res1.headers['x-ratelimit-pathremaining']).to.equal(2);
+                expect(res1.headers['x-ratelimit-pathremaining']).to.equal(1);
 
                 return server.inject({ method: 'GET', url: '/lowPathLimit' }).then((res2) => {
 
-                    expect(res2.headers['x-ratelimit-pathremaining']).to.equal(1);
+                    expect(res2.headers['x-ratelimit-pathremaining']).to.equal(0);
                     return server.inject({ method: 'GET', url: '/lowPathLimit' }).then((res3) => {
 
                         expect(res3.statusCode).to.equal(429);
@@ -293,13 +293,13 @@ describe('hapi-rate-limit', () => {
 
             return server.inject({ method: 'GET', url: '/trustProxy', headers: { 'x-forwarded-for': '127.0.0.2, 127.0.0.1' } }).then((res1) => {
 
-                expect(res1.headers['x-ratelimit-userremaining']).to.equal(300);
+                expect(res1.headers['x-ratelimit-userremaining']).to.equal(299);
                 return server.inject({ method: 'GET', url: '/trustProxy', headers: { 'x-forwarded-for': '127.0.0.2, 127.0.0.1' } }).then((res2) => {
 
-                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(299);
+                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(298);
                     return server.inject({ method: 'GET', url: '/trustProxy' }).then((res3) => {
 
-                        expect(res3.headers['x-ratelimit-userremaining']).to.equal(300);
+                        expect(res3.headers['x-ratelimit-userremaining']).to.equal(299);
                     });
                 });
             });
@@ -327,7 +327,7 @@ describe('hapi-rate-limit', () => {
                         'x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset',
                         'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset'
                     ]);
-                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(300);
+                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(299);
                 });
             });
         });
@@ -376,12 +376,12 @@ describe('hapi-rate-limit', () => {
 
             server.inject({ method: 'GET', url: '/defaults' }, (res1) => {
 
-                expect(res1.headers['x-ratelimit-userremaining']).to.equal(2);
+                expect(res1.headers['x-ratelimit-userremaining']).to.equal(1);
                 expect(res1.headers['x-ratelimit-userlimit']).to.equal(2);
 
                 server.inject({ method: 'GET', url: '/defaults' }, (res2) => {
 
-                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(1);
+                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(0);
                     server.inject({ method: 'GET', url: '/defaults' }, (res3) => {
 
                         expect(res3.statusCode).to.equal(429);
@@ -389,7 +389,7 @@ describe('hapi-rate-limit', () => {
 
                             server.inject({ method: 'GET', url: '/defaults' }, (res4) => {
 
-                                expect(res4.headers['x-ratelimit-userremaining']).to.equal(2);
+                                expect(res4.headers['x-ratelimit-userremaining']).to.equal(1);
                                 expect(res4.headers['x-ratelimit-userlimit']).to.equal(2);
                                 done();
                             });
