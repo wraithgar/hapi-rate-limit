@@ -416,4 +416,52 @@ describe('hapi-rate-limit', () => {
 
     });
 
+    describe('disabled routes', () => {
+
+        let server;
+
+        beforeEach(() => {
+
+            server = new Hapi.Server({
+                cache: { engine: require('catbox-memory') }
+            });
+
+            server.connection();
+            server.auth.scheme('trusty', () => {
+
+                return {
+                    authenticate: function (request, reply) {
+
+                        reply.continue({ credentials: { id: request.query.id, name: request.query.name } });
+                    }
+                };
+            });
+
+            server.auth.strategy('trusty', 'trusty');
+
+            return server.register([{
+                register: HapiRateLimit,
+                options: {
+                    userLimit: 1,
+                    pathLimit: 1,
+                    userCache: {
+                        expiresIn: 500
+                    }
+                }
+            }]).then(() => {
+
+                server.route(require('./test-routes'));
+                return server.initialize();
+            });
+        });
+
+        it('route disabled', () => {
+
+            return server.inject({ method: 'GET', url: '/pathDisabled' }).then((res) => {
+
+                expect(res.headers).to.not.include(['x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset']);
+                expect(res.headers).to.not.include(['x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset']);
+            });
+        });
+    });
 });
