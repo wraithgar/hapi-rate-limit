@@ -194,4 +194,19 @@ module.exports = [{
             strategy: 'trusty'
         }
     }
+},{
+    method: 'GET',
+    path: '/pathDisabled',
+    config: {
+        description: 'Route that has disabled rate limiting',
+        handler: (request, reply) => {
+
+            return reply(request.path);
+        },
+        plugins: {
+            'hapi-rate-limit': {
+                enabled: false
+            }
+        }
+    }
 }];
