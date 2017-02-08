@@ -31,6 +31,7 @@ server.register({
 
 Defaults are given here
 
+- `enabled`: `true` whether or not rate limiting is enabled at all. Set this to `false` in a route's config to bypass all rate limiting for that route
 - `userLimit`: `300` number of total requests a user can make per period.  Set to `false` to disable limiting requests per user.
 - `userCache`: Object with the following properties:
     -  `segment`: `hapi-rate-limit-user` Name of the cache segment to use for storing user rate limit info
@@ -81,6 +82,16 @@ For instance, to disable `pathLimit` for a route you would add this to its `conf
     plugins: {
         'hapi-rate-limit': {
             pathLimit: false
+        }
+    }
+```
+
+To disable all rate limiting for a route you woul add this to its `config` attribute
+
+```javascript
+    plugins: {
+        'hapi-rate-limit': {
+            enabled: false
         }
     }
 ```
