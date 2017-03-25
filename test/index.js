@@ -464,4 +464,87 @@ describe('hapi-rate-limit', () => {
             });
         });
     });
+
+    describe('configured user limit with numeric id', () => {
+
+        let server;
+
+        beforeEach(() => {
+
+            server = new Hapi.Server({
+                cache: { engine: require('catbox-memory') }
+            });
+
+            server.connection();
+            server.auth.scheme('trusty', () => {
+
+                return {
+                    authenticate: function (request, reply) {
+
+                        reply.continue({ credentials: { id: 10 } });
+                    }
+                };
+            });
+
+            server.auth.strategy('trusty', 'trusty');
+
+            return server.register([{
+                register: HapiRateLimit,
+                options: {
+                    userLimit: 2,
+                    userCache: {
+                        expiresIn: 500
+                    }
+                }
+            }]).then(() => {
+
+                server.route(require('./test-routes'));
+                return server.initialize();
+            });
+        });
+
+        it('runs out of configured userLimit', (done) => {
+
+            server.inject({ method: 'GET', url: '/auth' }, (res1) => {
+
+                expect(res1.headers['x-ratelimit-userremaining']).to.equal(1);
+                expect(res1.headers['x-ratelimit-userlimit']).to.equal(2);
+
+                server.inject({ method: 'GET', url: '/auth' }, (res2) => {
+
+                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(0);
+                    server.inject({ method: 'GET', url: '/auth' }, (res3) => {
+
+                        expect(res3.statusCode).to.equal(429);
+                        setTimeout(() => {
+
+                            server.inject({ method: 'GET', url: '/auth' }, (res4) => {
+
+                                expect(res4.headers['x-ratelimit-userremaining']).to.equal(1);
+                                expect(res4.headers['x-ratelimit-userlimit']).to.equal(2);
+                                done();
+                            });
+                        }, 1000);
+                    });
+                });
+            });
+        });
+
+        it('disabled path limit runs out of userLimit', () => {
+
+            return server.inject({ method: 'GET', url: '/noPathLimit' }).then((res1) => {
+
+                return server.inject({ method: 'GET', url: '/noPathLimit' }).then((res2) => {
+
+                    return server.inject({ method: 'GET', url: '/noPathLimit' }).then((res3) => {
+
+                        expect(res3.statusCode).to.equal(429);
+                        expect(res3.headers).to.not.include(['x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset']);
+                    });
+                });
+            });
+        });
+
+    });
+
 });
