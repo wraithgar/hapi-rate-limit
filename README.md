@@ -10,7 +10,7 @@ Lead Maintainer: [Gar](https://github.com/wraithgar)
 
 **hapi-rate-limit** is a plugin for [hapi](http://hapijs.com) that enables rate limiting.
 
-It relies on `cache` being defined in the server.
+It relies on `cache` being defined in the server. Due to an issue with [catbox-redis#59](https://github.com/hapijs/catbox-redis/issues/59) it does not work with [catbox-redis](https://github.com/hapijs/catbox-redis) at the moment.
 
 ## Use
 
