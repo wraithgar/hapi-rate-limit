@@ -7,6 +7,7 @@ const describe = lab.describe;
 const it = lab.it;
 
 const Hapi = require('hapi');
+const Boom = require('boom');
 const HapiRateLimit = require('../');
 
 describe('hapi-rate-limit', () => {
@@ -540,6 +541,96 @@ describe('hapi-rate-limit', () => {
 
                         expect(res3.statusCode).to.equal(429);
                         expect(res3.headers).to.not.include(['x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset']);
+                    });
+                });
+            });
+        });
+
+    });
+
+    describe('with enabled checkUnauthorized', () => {
+
+        let server;
+
+        beforeEach(() => {
+
+            server = new Hapi.Server({
+                cache: { engine: require('catbox-memory') }
+            });
+
+            server.connection();
+            server.auth.scheme('trusty', () => {
+
+                return {
+                    authenticate: function (request, reply) {
+
+                        reply(Boom.unauthorized('invalid'));
+                    }
+                };
+            });
+
+            server.auth.strategy('trusty', 'trusty');
+
+            return server.register([{
+                register: HapiRateLimit,
+                options: {
+                    checkUnauthorized: true,
+                    userLimit: 2,
+                    userCache: {
+                        expiresIn: 500
+                    }
+                }
+            }]).then(() => {
+
+                server.route(require('./test-routes'));
+                return server.initialize();
+            });
+        });
+
+        it('runs out of configured userLimit', (done) => {
+
+            server.inject({ method: 'GET', url: '/auth' }, (res1) => {
+
+                expect(res1.statusCode).to.equal(401);
+                expect(res1.headers['x-ratelimit-userremaining']).to.equal(1);
+                expect(res1.headers['x-ratelimit-userlimit']).to.equal(2);
+                expect(res1.headers).to.include(['x-ratelimit-userreset']);
+
+                server.inject({ method: 'GET', url: '/auth' }, (res2) => {
+
+                    expect(res2.headers['x-ratelimit-userremaining']).to.equal(0);
+                    server.inject({ method: 'GET', url: '/auth' }, (res3) => {
+
+                        expect(res3.statusCode).to.equal(429);
+                        setTimeout(() => {
+
+                            server.inject({ method: 'GET', url: '/auth' }, (res4) => {
+
+                                expect(res4.headers['x-ratelimit-userremaining']).to.equal(1);
+                                expect(res4.headers['x-ratelimit-userlimit']).to.equal(2);
+                                done();
+                            });
+                        }, 1000);
+                    });
+                });
+            });
+        });
+
+        it('bad data in user cache', (done) => {
+
+            const userCache = server.cache({ segment: 'hapi-rate-limit-user', shared: true });
+            userCache.set('127.0.0.1', 'noAuth', 10000, (err) => {
+
+                expect(err).to.not.exist();
+                userCache._cache.connection.cache['hapi-rate-limit-user']['127.0.0.1'] = '{bad json}';
+
+                server.inject({ method: 'GET', url: '/auth' }, (res) => {
+
+                    expect(res.statusCode).to.equal(500);
+                    userCache.set('127.0.0.1', 0, 10000, (err) => {
+
+                        expect(err).to.not.exist();
+                        done();
                     });
                 });
             });
