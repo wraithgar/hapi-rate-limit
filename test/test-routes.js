@@ -45,6 +45,26 @@ module.exports = [{
     }
 }, {
     method: 'GET',
+    path: '/addressOnlyUserPathLimit',
+    config: {
+        description: 'Authenticated route with addressOnly set with userPathLimit and no user limit',
+        handler: (request, reply) => {
+
+            return reply(request.path);
+        },
+        plugins: {
+            'hapi-rate-limit': {
+                addressOnly: true,
+                userLimit: false,
+                userPathLimit: 50
+            }
+        },
+        auth: {
+            strategy: 'trusty'
+        }
+    }
+}, {
+    method: 'GET',
     path: '/authName',
     config: {
         description: 'Authenticated route with name set as the userAttribute',
@@ -118,6 +138,21 @@ module.exports = [{
     }
 }, {
     method: 'GET',
+    path: '/noUserPathLimit',
+    config: {
+        description: 'Route with userPathLimit disabled',
+        handler: (request, reply) => {
+
+            return reply(request.path);
+        },
+        plugins: {
+            'hapi-rate-limit': {
+                userPathLimit: false
+            }
+        }
+    }
+}, {
+    method: 'GET',
     path: '/setPathLimit',
     config: {
         description: 'Route with set pathLimit',
@@ -133,6 +168,59 @@ module.exports = [{
     }
 }, {
     method: 'GET',
+    path: '/setUserPathLimit',
+    config: {
+        description: 'Route with set userPathLimit',
+        handler: (request, reply) => {
+
+            return reply(request.path);
+        },
+        plugins: {
+            'hapi-rate-limit': {
+                userPathLimit: 50
+            }
+        },
+        auth: {
+            strategy: 'trusty'
+        }
+    }
+}, {
+    method: 'GET',
+    path: '/setUserPathLimit2',
+    config: {
+        description: 'Route with set userPathLimit',
+        handler: (request, reply) => {
+
+            return reply(request.path);
+        },
+        plugins: {
+            'hapi-rate-limit': {
+                userPathLimit: 50
+            }
+        }
+    }
+}, {
+    method: 'GET',
+    path: '/setUserPathLimitOnly',
+    config: {
+        description: 'Route with set userPathLimit',
+        handler: (request, reply) => {
+
+            return reply(request.path);
+        },
+        plugins: {
+            'hapi-rate-limit': {
+                userPathLimit: 50,
+                userLimit: false,
+                pathLimit: false
+            }
+        },
+        auth: {
+            strategy: 'trusty'
+        }
+    }
+}, {
+    method: 'GET',
     path: '/lowPathLimit',
     config: {
         description: 'Route with very low pathLimit',
@@ -143,6 +231,21 @@ module.exports = [{
         plugins: {
             'hapi-rate-limit': {
                 pathLimit: 2
+            }
+        }
+    }
+}, {
+    method: 'GET',
+    path: '/lowUserPathLimit',
+    config: {
+        description: 'Route with very low userPathLimit',
+        handler: (request, reply) => {
+
+            return reply(request.path);
+        },
+        plugins: {
+            'hapi-rate-limit': {
+                userPathLimit: 2
             }
         }
     }
