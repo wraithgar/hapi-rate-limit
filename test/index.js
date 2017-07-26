@@ -52,6 +52,7 @@ describe('hapi-rate-limit', () => {
                     'x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset',
                     'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset'
                 ]);
+                expect(res1.headers).to.not.include(['x-ratelimit-userpathlimit', 'x-ratelimit-userpathremaining', 'x-ratelimit-userpathreset']);
                 expect(res1.headers['x-ratelimit-pathlimit']).to.equal(50);
                 expect(res1.headers['x-ratelimit-pathremaining']).to.equal(49);
                 expect(res1.headers['x-ratelimit-pathreset']).to.be.a.number();
@@ -67,6 +68,7 @@ describe('hapi-rate-limit', () => {
                         'x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset',
                         'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset'
                     ]);
+                    expect(res1.headers).to.not.include(['x-ratelimit-userpathlimit', 'x-ratelimit-userpathremaining', 'x-ratelimit-userpathreset']);
                     expect(res2.headers['x-ratelimit-pathlimit']).to.equal(50);
                     expect(res2.headers['x-ratelimit-pathremaining']).to.equal(48);
                     expect(res2.headers['x-ratelimit-pathreset'] - pathReset).to.be.within(-100, 100);
@@ -128,6 +130,23 @@ describe('hapi-rate-limit', () => {
             });
         });
 
+        it('route configured addressOnly for userPathLimit', () => {
+
+            return server.inject({ method: 'GET', url: '/addressOnlyUserPathLimit?id=3' }).then((res1) => {
+
+                expect(res1.headers['x-ratelimit-userpathremaining']).to.equal(49);
+
+                return server.inject({ method: 'GET', url: '/addressOnlyUserPathLimit?id=3' }).then((res2) => {
+
+                    expect(res2.headers['x-ratelimit-userpathremaining']).to.equal(48);
+                    return server.inject({ method: 'GET', url: '/addressOnlyUserPathLimit?id=4' }).then((res3) => {
+
+                        expect(res3.headers['x-ratelimit-userpathremaining']).to.equal(47);
+                    });
+                });
+            });
+        });
+
         it('route disabled pathLimit', () => {
 
             return server.inject({ method: 'GET', url: '/noPathLimit' }).then((res) => {
@@ -143,6 +162,16 @@ describe('hapi-rate-limit', () => {
 
                 expect(res.headers).to.include(['x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset']);
                 expect(res.headers).to.not.include(['x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset']);
+            });
+        });
+
+        it('route disabled userPathLimit', () => {
+
+            return server.inject({ method: 'GET', url: '/noUserPathLimit' }).then((res) => {
+
+                expect(res.headers).to.include(['x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset']);
+                expect(res.headers).to.include(['x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset']);
+                expect(res.headers).to.not.include(['x-ratelimit-userpathlimit', 'x-ratelimit-userpathremaining', 'x-ratelimit-userpathreset']);
             });
         });
 
@@ -191,13 +220,73 @@ describe('hapi-rate-limit', () => {
             });
         });
 
+        it('route configured userPathLimit', () => {
+
+            return server.inject({ method: 'GET', url: '/setUserPathLimit?id=1' }).then((res1) => {
+
+                const userPathReset = res1.headers['x-ratelimit-userpathreset'];
+                expect(res1.headers).to.include([
+                    'x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset',
+                    'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset',
+                    'x-ratelimit-userpathlimit', 'x-ratelimit-userpathremaining', 'x-ratelimit-userpathreset'
+                ]);
+                expect(res1.headers['x-ratelimit-userpathlimit']).to.equal(50);
+                expect(res1.headers['x-ratelimit-userpathremaining']).to.equal(49);
+                expect(res1.headers['x-ratelimit-userpathreset']).to.be.a.number();
+                expect(res1.headers['x-ratelimit-userpathreset'] - Date.now()).to.be.within(59900, 60100);
+
+                return server.inject({ method: 'GET', url: '/setUserPathLimit2?id=1' }).then((res2) => {
+
+                    expect(res2.headers).to.include([
+                        'x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset',
+                        'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset',
+                        'x-ratelimit-userpathlimit', 'x-ratelimit-userpathremaining', 'x-ratelimit-userpathreset'
+                    ]);
+                    expect(res2.headers['x-ratelimit-userpathlimit']).to.equal(50);
+                    expect(res2.headers['x-ratelimit-userpathremaining']).to.equal(49);
+                    expect(res1.headers['x-ratelimit-userpathreset']).to.be.a.number();
+                    expect(res1.headers['x-ratelimit-userpathreset'] - Date.now()).to.be.within(59900, 60100);
+
+                    return server.inject({ method: 'GET', url: '/setUserPathLimit?id=1' }).then((res3) => {
+
+                        expect(res3.headers).to.include([
+                            'x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset',
+                            'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset',
+                            'x-ratelimit-userpathlimit', 'x-ratelimit-userpathremaining', 'x-ratelimit-userpathreset'
+                        ]);
+                        expect(res3.headers['x-ratelimit-userpathlimit']).to.equal(50);
+                        expect(res3.headers['x-ratelimit-userpathremaining']).to.equal(48);
+                        expect(res3.headers['x-ratelimit-userpathreset'] - userPathReset).to.be.within(-100, 100);
+                    });
+                });
+            });
+        });
+
+        it('runs out of userPathLimit', () => {
+
+            return server.inject({ method: 'GET', url: '/lowUserPathLimit' }).then((res1) => {
+
+                expect(res1.headers['x-ratelimit-userpathremaining']).to.equal(1);
+
+                return server.inject({ method: 'GET', url: '/lowUserPathLimit' }).then((res2) => {
+
+                    expect(res2.headers['x-ratelimit-userpathremaining']).to.equal(0);
+                    return server.inject({ method: 'GET', url: '/lowUserPathLimit' }).then((res3) => {
+
+                        expect(res3.statusCode).to.equal(429);
+                    });
+                });
+            });
+        });
+
         it('route configured no headers', () => {
 
             return server.inject({ method: 'GET', url: '/noHeaders' }).then((res) => {
 
                 expect(res.headers).to.not.include([
                     'x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset',
-                    'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset'
+                    'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset',
+                    'x-ratelimit-userpathlimit', 'x-ratelimit-userpathremaining', 'x-ratelimit-userpathreset'
                 ]);
             });
         });
@@ -210,7 +299,8 @@ describe('hapi-rate-limit', () => {
                     'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset'
                 ]);
                 expect(res1.headers).to.not.include([
-                    'x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset'
+                    'x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset',
+                    'x-ratelimit-userpathlimit', 'x-ratelimit-userpathremaining', 'x-ratelimit-userpathreset'
                 ]);
 
                 const userCount = res1.headers['x-ratelimit-userremaining'];
@@ -241,6 +331,26 @@ describe('hapi-rate-limit', () => {
             });
         });
 
+        it('bad data in userPath cache', (done) => {
+
+            const userPathCache = server.cache({ segment: 'hapi-rate-limit-userPath', shared: true });
+            userPathCache.set('1:/setUserPathLimit', 'replaced', 10000, (err) => {
+
+                expect(err).to.not.exist();
+                userPathCache._cache.connection.cache['hapi-rate-limit-userPath']['1:/setUserPathLimit'] = '{bad json}';
+
+                server.inject({ method: 'GET', url: '/setUserPathLimit?id=1' }, (res) => {
+
+                    expect(res.statusCode).to.equal(500);
+                    userPathCache.set('1:/setUserPathLimit', 0, 10000, (err) => {
+
+                        expect(err).to.not.exist();
+                        done();
+                    });
+                });
+            });
+        });
+
         it('path cache full', (done) => {
 
             const pathCache = server.cache({ segment: 'hapi-rate-limit-path', shared: true });
@@ -251,6 +361,20 @@ describe('hapi-rate-limit', () => {
 
                 expect(res.statusCode).to.equal(500);
                 pathCache._cache.connection.settings.maxByteSize = cacheSize;
+                done();
+            });
+        });
+
+        it('userPath cache full', (done) => {
+
+            const userPathCache = server.cache({ segment: 'hapi-rate-limit-userPath', shared: true });
+            const cacheSize = userPathCache._cache.connection.settings.maxByteSize;
+            userPathCache._cache.connection.settings.maxByteSize = 10;
+
+            server.inject({ method: 'GET', url: '/setUserPathLimitOnly?id=1' }, (res) => {
+
+                expect(res.statusCode).to.equal(500);
+                userPathCache._cache.connection.settings.maxByteSize = cacheSize;
                 done();
             });
         });
