@@ -39,7 +39,7 @@ Defaults are given here
 - `userAttribute`: `id` credentials attribute to use when determining distinct authenticated users
 - `userWhitelist`: `[]` array of users (as defined by `userAttribute` for whom to bypass rate limiting.  This is only applied to authenticated users, for ip whitelisting use `ipWhitelist`.
 - `addressOnly`: `false` if true, only consider user address when determining distinct authenticated users
-- `pathLimit`: `50` number of total requests that can be made on a given path per period.  Set to `false` to disable limiting requests per user.
+- `pathLimit`: `50` number of total requests that can be made on a given path per period.  Set to `false` to disable limiting requests per path.
 - `pathCache`: Object with the following properties:
 	- `segment`: `hapi-rate-limit-path` Name of the cache segment to use for storing path rate limit info
 	- `expiresIn`: `60000` Time (in milliseconds) of period for `pathLimit`
