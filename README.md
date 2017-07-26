@@ -43,6 +43,10 @@ Defaults are given here
 - `pathCache`: Object with the following properties:
 	- `segment`: `hapi-rate-limit-path` Name of the cache segment to use for storing path rate limit info
 	- `expiresIn`: `60000` Time (in milliseconds) of period for `pathLimit`
+- `userPathLimit`: `false` number of total requests that can be made on a given path per user per period.  Set to `false` to disable limiting requests per path per user.
+- `userPathCache`: Object with the following properties:
+	- `segment`: `hapi-rate-limit-userPath` Name of the cache segment to use for storing userPath rate limit info
+	- `expiresIn`: `60000` Time (in milliseconds) of period for `userPathLimit`
 - `headers`: `true` Whether or not to include headers in responses
 - `ipWhitelist`: `[]` array of IPs for whom to bypass rate limiting.  Note that a whitelisted IP would also bypass restrictions an authenticated user would otherwise have.
 - `trustProxy`: `false` If true, honor the `X-Forwarded-For` header.  See note below.
@@ -71,6 +75,9 @@ The following headers will be included in server responses if their respective l
 - `x-ratelimit-userlimit`: Will equal `userLimit`
 - `x-ratelimit-userremaining`: Remaining number of requests user has this period
 - `x-ratelimit-userreset`: Time (in milliseconds) until reset of `userLimit` period
+- `x-ratelimit-userpathlimit`: Will equal `userPathLimit`
+- `x-ratelimit-userpathremaining`: Remaining number of requests user has this period for this path
+- `x-ratelimit-userpathreset`: Time (in milliseconds) until reset of `userPathLimit` period
 
 ## Per-route settings
 
