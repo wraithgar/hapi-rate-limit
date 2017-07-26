@@ -35,9 +35,9 @@
   ],
   "devDependencies": {
     "catbox-memory": "^2.0.3",
-    "code": "^4.0.0",
+    "code": "^4.1.0",
     "git-validate": "^2.1.4",
-    "hapi": "^16.0.0",
-    "lab": "^14.0.0"
+    "hapi": "^16.5.0",
+    "lab": "^14.1.1"
   }
 }
