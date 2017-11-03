@@ -26,7 +26,7 @@
   ],
   "homepage": "https://github.com/wraithgar/hapi-rate-limit#readme",
   "dependencies": {
-    "boom": "^6.0.0",
+    "boom": "^7.0.0",
     "hoek": "^5.0.0"
   },
   "files": [
