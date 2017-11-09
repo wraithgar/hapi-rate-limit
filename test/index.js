@@ -106,7 +106,7 @@ describe('hapi-rate-limit', () => {
             expect(res.headers['x-ratelimit-userremaining']).to.equal(299);
         });
 
-        it('route configured addressOnly', async() => {
+        it('route configured addressOnly', async () => {
 
             let res;
             res = await server.inject({ method: 'GET', url: '/addressOnly?id=3' });
@@ -155,8 +155,8 @@ describe('hapi-rate-limit', () => {
 
         it('route configured pathLimit', async () => {
 
-            let res
-            res = await server.inject({ method: 'GET', url: '/setPathLimit' })
+            let res;
+            res = await server.inject({ method: 'GET', url: '/setPathLimit' });
             const pathReset = res.headers['x-ratelimit-pathreset'];
             expect(res.headers).to.include([
                 'x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset',
@@ -167,7 +167,7 @@ describe('hapi-rate-limit', () => {
             expect(res.headers['x-ratelimit-pathreset']).to.be.a.number();
             expect(res.headers['x-ratelimit-pathreset'] - Date.now()).to.be.within(59900, 60100);
 
-            res = await server.inject({ method: 'GET', url: '/setPathLimit' })
+            res = await server.inject({ method: 'GET', url: '/setPathLimit' });
             expect(res.headers).to.include([
                 'x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset',
                 'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset'
@@ -282,108 +282,6 @@ describe('hapi-rate-limit', () => {
             ]);
         });
 
-        //I suspect this isn't needed cause we don't catch errors anymore
-        //it('bad data in path cache', async () => {
-
-            //const pathCache = server.cache({ segment: 'hapi-rate-limit-path', shared: true });
-            //await pathCache.set('/defaults', 'replaced', 100000;
-
-            //pathCache._cache.connection.cache['hapi-rate-limit-path']['/defaults'] = '{bad json}';
-
-                //server.inject({ method: 'GET', url: '/defaults' }, (res) => {
-
-                    //expect(res.statusCode).to.equal(500);
-                    //pathCache.set('/defaults', 0, 10000, (err) => {
-
-                        //expect(err).to.not.exist();
-                        //done();
-                    //});
-                //});
-            //});
-        //});
-
-        //it('bad data in userPath cache', (done) => {
-
-            //const userPathCache = server.cache({ segment: 'hapi-rate-limit-userPath', shared: true });
-            //userPathCache.set('1:/setUserPathLimit', 'replaced', 10000, (err) => {
-
-                //expect(err).to.not.exist();
-                //userPathCache._cache.connection.cache['hapi-rate-limit-userPath']['1:/setUserPathLimit'] = '{bad json}';
-
-                //server.inject({ method: 'GET', url: '/setUserPathLimit?id=1' }, (res) => {
-
-                    //expect(res.statusCode).to.equal(500);
-                    //userPathCache.set('1:/setUserPathLimit', 0, 10000, (err) => {
-
-                        //expect(err).to.not.exist();
-                        //done();
-                    //});
-                //});
-            //});
-        //});
-
-        //it('path cache full', (done) => {
-
-            //const pathCache = server.cache({ segment: 'hapi-rate-limit-path', shared: true });
-            //const cacheSize = pathCache._cache.connection.settings.maxByteSize;
-            //pathCache._cache.connection.settings.maxByteSize = 10;
-
-            //server.inject({ method: 'GET', url: '/defaults' }, (res) => {
-
-                //expect(res.statusCode).to.equal(500);
-                //pathCache._cache.connection.settings.maxByteSize = cacheSize;
-                //done();
-            //});
-        //});
-
-        //it('userPath cache full', (done) => {
-
-            //const userPathCache = server.cache({ segment: 'hapi-rate-limit-userPath', shared: true });
-            //const cacheSize = userPathCache._cache.connection.settings.maxByteSize;
-            //userPathCache._cache.connection.settings.maxByteSize = 10;
-
-            //server.inject({ method: 'GET', url: '/setUserPathLimitOnly?id=1' }, (res) => {
-
-                //expect(res.statusCode).to.equal(500);
-                //userPathCache._cache.connection.settings.maxByteSize = cacheSize;
-                //done();
-            //});
-        //});
-
-        //it('bad data in user cache', (done) => {
-
-            //const userCache = server.cache({ segment: 'hapi-rate-limit-user', shared: true });
-            //userCache.set('127.0.0.1', 'asdf', 10000, (err) => {
-
-                //expect(err).to.not.exist();
-                //userCache._cache.connection.cache['hapi-rate-limit-user']['127.0.0.1'] = '{bad json}';
-
-                //server.inject({ method: 'GET', url: '/defaults' }, (res) => {
-
-                    //expect(res.statusCode).to.equal(500);
-                    //userCache.set('127.0.0.1', 0, 10000, (err) => {
-
-                        //expect(err).to.not.exist();
-                        //done();
-                    //});
-                //});
-            //});
-        //});
-
-        //it('user cache full', (done) => {
-
-            //const userCache = server.cache({ segment: 'hapi-rate-limit-user', shared: true });
-            //const cacheSize = userCache._cache.connection.settings.maxByteSize;
-            //userCache._cache.connection.settings.maxByteSize = 10;
-
-            //server.inject({ method: 'GET', url: '/noPathLimit' }, (res) => {
-
-                //expect(res.statusCode).to.equal(500);
-                //userCache._cache.connection.settings.maxByteSize = cacheSize;
-                //done();
-            //});
-        //});
-
         it('route configured trustProxy', async () => {
 
             let res;
@@ -440,7 +338,7 @@ describe('hapi-rate-limit', () => {
             server.auth.scheme('trusty', () => {
 
                 return {
-                    authenticate: function (request, reply) {
+                    authenticate: function (request, h) {
 
                         return h.authenticated({ credentials: { id: request.query.id, name: request.query.name } });
                     }
@@ -505,7 +403,7 @@ describe('hapi-rate-limit', () => {
             server.auth.scheme('trusty', () => {
 
                 return {
-                    authenticate: function (request, reply) {
+                    authenticate: function (request, h) {
 
                         return h.authenticated({ credentials: { id: request.query.id, name: request.query.name } });
                     }
@@ -585,7 +483,7 @@ describe('hapi-rate-limit', () => {
 
             res = await server.inject({ method: 'GET', url: '/auth' });
             expect(res.statusCode).to.equal(429);
-            await timeout(1000)
+            await timeout(1000);
             res = await server.inject({ method: 'GET', url: '/auth' });
 
             expect(res.headers['x-ratelimit-userremaining']).to.equal(1);
@@ -595,7 +493,7 @@ describe('hapi-rate-limit', () => {
         it('disabled path limit runs out of userLimit', async () => {
 
             await server.inject({ method: 'GET', url: '/noPathLimit' });
-                await server.inject({ method: 'GET', url: '/noPathLimit' });
+            await server.inject({ method: 'GET', url: '/noPathLimit' });
             const res = await server.inject({ method: 'GET', url: '/noPathLimit' });
 
             expect(res.statusCode).to.equal(429);
