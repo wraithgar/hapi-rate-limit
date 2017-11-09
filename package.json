@@ -26,8 +26,9 @@
   ],
   "homepage": "https://github.com/wraithgar/hapi-rate-limit#readme",
   "dependencies": {
-    "boom": "^6.0.0",
-    "hoek": "^5.0.0"
+    "boom": "^7.1.1",
+    "bounce": "^1.2.0",
+    "hoek": "^5.0.2"
   },
   "files": [
     "index.js",
@@ -35,9 +36,9 @@
   ],
   "devDependencies": {
     "catbox-memory": "^3.1.1",
-    "code": "^5.0.0",
+    "code": "^5.1.2",
     "git-validate": "^2.1.4",
-    "hapi": "^16.5.0",
+    "hapi": "^17.0.1",
     "lab": "^15.1.1"
   }
 }
