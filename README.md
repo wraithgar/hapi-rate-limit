@@ -17,12 +17,11 @@ It relies on `cache` being defined in the server.
 ```javascript
 const Hapi = require('hapi');
 
-const server = new Hapi.Server({
-    cache: { engine: require('catbox-memory') }
+const server = Hapi.server({
+    cache: { engine: require('catbox-memory'), name: 'memory' }
 });
-server.connection();
 server.register({
-    register: require('hapi-rate-limit'),
+    plugin: require('hapi-rate-limit'),
     options: {}
 });
 ```
