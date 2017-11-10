@@ -7,9 +7,9 @@ module.exports = [{
     path: '/defaults',
     config: {
         description: 'Route with no special config, letting defaults take over',
-        handler: (request, reply) => {
+        handler: (request, h) => {
 
-            return reply(request.path);
+            return request.path;
         }
     }
 }, {
@@ -17,9 +17,9 @@ module.exports = [{
     path: '/auth',
     config: {
         description: 'Authenticated route',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         auth: {
             strategy: 'trusty'
@@ -30,9 +30,9 @@ module.exports = [{
     path: '/addressOnly',
     config: {
         description: 'Authenticated route with addressOnly set',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         plugins: {
             'hapi-rate-limit': {
@@ -48,9 +48,9 @@ module.exports = [{
     path: '/addressOnlyUserPathLimit',
     config: {
         description: 'Authenticated route with addressOnly set with userPathLimit and no user limit',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         plugins: {
             'hapi-rate-limit': {
@@ -68,9 +68,9 @@ module.exports = [{
     path: '/authName',
     config: {
         description: 'Authenticated route with name set as the userAttribute',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         plugins: {
             'hapi-rate-limit': {
@@ -86,9 +86,9 @@ module.exports = [{
     path: '/notfound',
     config: {
         description: 'Route that returns a 404',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(Boom.notFound());
+            return Boom.notFound();
         }
     }
 }, {
@@ -96,9 +96,9 @@ module.exports = [{
     path: '/noUserLimit',
     config: {
         description: 'Route with userLimit disabled',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         plugins: {
             'hapi-rate-limit': {
@@ -111,9 +111,9 @@ module.exports = [{
     path: '/noHeaders',
     config: {
         description: 'Route with rate limit headers disabled',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         plugins: {
             'hapi-rate-limit': {
@@ -126,9 +126,9 @@ module.exports = [{
     path: '/noPathLimit',
     config: {
         description: 'Route with pathLimit disabled',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         plugins: {
             'hapi-rate-limit': {
@@ -141,9 +141,9 @@ module.exports = [{
     path: '/noUserPathLimit',
     config: {
         description: 'Route with userPathLimit disabled',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         plugins: {
             'hapi-rate-limit': {
@@ -156,9 +156,9 @@ module.exports = [{
     path: '/setPathLimit',
     config: {
         description: 'Route with set pathLimit',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         plugins: {
             'hapi-rate-limit': {
@@ -171,9 +171,9 @@ module.exports = [{
     path: '/setUserPathLimit',
     config: {
         description: 'Route with set userPathLimit',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         plugins: {
             'hapi-rate-limit': {
@@ -189,9 +189,9 @@ module.exports = [{
     path: '/setUserPathLimit2',
     config: {
         description: 'Route with set userPathLimit',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         plugins: {
             'hapi-rate-limit': {
@@ -204,9 +204,9 @@ module.exports = [{
     path: '/setUserPathLimitOnly',
     config: {
         description: 'Route with set userPathLimit',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         plugins: {
             'hapi-rate-limit': {
@@ -224,9 +224,9 @@ module.exports = [{
     path: '/lowPathLimit',
     config: {
         description: 'Route with very low pathLimit',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         plugins: {
             'hapi-rate-limit': {
@@ -239,9 +239,9 @@ module.exports = [{
     path: '/lowUserPathLimit',
     config: {
         description: 'Route with very low userPathLimit',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         plugins: {
             'hapi-rate-limit': {
@@ -254,9 +254,9 @@ module.exports = [{
     path: '/trustProxy',
     config: {
         description: 'Route with trustProxy set',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         plugins: {
             'hapi-rate-limit': {
@@ -269,9 +269,9 @@ module.exports = [{
     path: '/ipWhitelist',
     config: {
         description: 'Route with an ipWhitelist',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         plugins: {
             'hapi-rate-limit': {
@@ -284,9 +284,9 @@ module.exports = [{
     path: '/userWhitelist',
     config: {
         description: 'Route with a userWhitelist',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         plugins: {
             'hapi-rate-limit': {
@@ -302,9 +302,9 @@ module.exports = [{
     path: '/pathDisabled',
     config: {
         description: 'Route that has disabled rate limiting',
-        handler: (request, reply) => {
+        handler: function (request) {
 
-            return reply(request.path);
+            return request.path;
         },
         plugins: {
             'hapi-rate-limit': {
