@@ -49,12 +49,15 @@ Defaults are given here
 - `headers`: `true` Whether or not to include headers in responses
 - `ipWhitelist`: `[]` array of IPs for whom to bypass rate limiting.  Note that a whitelisted IP would also bypass restrictions an authenticated user would otherwise have.
 - `trustProxy`: `false` If true, honor the `X-Forwarded-For` header.  See note below.
+- `getIpFromProxyHeader`: `undefined` a function which will extract the remote address from the `X-Forwarded-For` header. The default implementation takes the first entry.
 
 ## Users
 
 A user is considered a single `remoteAddress` for routes that are unauthenticated.  On authenticated routes it is the `userAtribute` (default `id`) of the authenticated user.
 
-If `trustProxy` is true, the address from the `X-Forwarded-For` header will be use instead of `remoteAddress`, if present
+If `trustProxy` is true, the address from the `X-Forwarded-For` header will be use instead of `remoteAddress`, if present.
+
+If `trustProxy` is true and `getIpFromProxyHeader` is not defined, the address will be determined using the first entry in the `X-Forwarded-For` header.
 
 ## Proxies
 

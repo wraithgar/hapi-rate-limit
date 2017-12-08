@@ -502,4 +502,48 @@ describe('hapi-rate-limit', () => {
 
     });
 
+    describe('custom get ip from proxy header which returns the last one', () => {
+
+        let server;
+
+        beforeEach(async () => {
+
+            server = Hapi.server({
+                autoListen: false,
+                cache: { engine: require('catbox-memory') }
+            });
+
+            server.auth.scheme('trusty', () => {
+
+                return {
+                    authenticate: function (request, h) {
+
+                        return h.authenticated({ credentials: { id: request.query.id, name: request.query.name } });
+                    }
+                };
+            });
+            server.auth.strategy('trusty', 'trusty');
+
+            await server.register([{
+                plugin: HapiRateLimit,
+                options: {
+                    getIpFromProxyHeader: (xForwardedFor) => xForwardedFor.split(',')[1] // Take always the second one
+                }
+            }]);
+            server.route(require('./test-routes'));
+            await server.initialize();
+        });
+
+        it('increases the user remaining only when the last ip in the x-forwarded-for header changes', async () => {
+
+            let res;
+            res = await server.inject({ method: 'GET', url: '/trustProxy', headers: { 'x-forwarded-for': '127.0.0.2, 127.0.0.1' } });
+            expect(res.headers['x-ratelimit-userremaining']).to.equal(299);
+
+            res = await server.inject({ method: 'GET', url: '/trustProxy', headers: { 'x-forwarded-for': '127.0.0.2, 127.0.0.3' } });
+            expect(res.headers['x-ratelimit-userremaining']).to.equal(299);
+        });
+
+
+    });
 });
