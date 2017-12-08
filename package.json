@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/wraithgar/hapi-rate-limit.git"
+    "url": "https://github.com/wraithgar/hapi-rate-limit.git"
   },
   "keywords": [
     "hapi",
