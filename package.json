@@ -30,9 +30,6 @@
   },
   "dependencies": {
     "boom": "^7.1.1",
-    "bounce": "^1.2.0",
-    "eslint": "^4.10.0",
-    "eslint-plugin-hapi": "^4.1.0",
     "hoek": "^5.0.2"
   },
   "files": [
@@ -42,8 +39,10 @@
   "devDependencies": {
     "catbox-memory": "^3.1.1",
     "code": "^5.1.2",
+    "eslint": "^4.16.0",
+    "eslint-plugin-hapi": "^4.1.0",
     "git-validate": "^2.1.4",
-    "hapi": "^17.0.1",
-    "lab": "^15.1.1"
+    "hapi": "^17.2.0",
+    "lab": "^15.2.0"
   }
 }
