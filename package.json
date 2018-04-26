@@ -37,12 +37,12 @@
     "lib"
   ],
   "devDependencies": {
-    "catbox-memory": "^3.1.1",
-    "code": "^5.1.2",
-    "eslint": "^4.16.0",
+    "catbox-memory": "^3.1.2",
+    "code": "^5.2.0",
+    "eslint": "^4.19.1",
     "eslint-plugin-hapi": "^4.1.0",
     "git-validate": "^2.1.4",
-    "hapi": "^17.2.0",
-    "lab": "^15.2.0"
+    "hapi": "^17.3.1",
+    "lab": "^15.4.1"
   }
 }
