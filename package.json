@@ -39,7 +39,7 @@
   "devDependencies": {
     "catbox-memory": "^3.1.2",
     "code": "^5.2.0",
-    "eslint": "^4.19.1",
+    "eslint": "^5.0.0",
     "eslint-plugin-hapi": "^4.1.0",
     "git-validate": "^2.1.4",
     "hapi": "^17.3.1",
