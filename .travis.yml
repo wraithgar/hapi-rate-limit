@@ -9,6 +9,6 @@ install:
 before_install:
   - npm i -g greenkeeper-lockfile
 before_script:
-  - npm run greenkeeper-lockfile-update
+  - greenkeeper-lockfile-update
 after_script:
-  - npm run greenkeeper-lockfile-upload
+  - greenkeeper-lockfile-upload
