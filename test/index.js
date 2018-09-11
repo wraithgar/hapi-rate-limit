@@ -2,10 +2,12 @@
 
 const lab = exports.lab = require('lab').script();
 const expect = require('code').expect;
+
 const beforeEach = lab.beforeEach;
 const describe = lab.describe;
 const it = lab.it;
 const { promisify } = require('util');
+
 const timeout = promisify(setTimeout);
 
 const Hapi = require('hapi');
