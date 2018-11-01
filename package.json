@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "boom": "^7.2.0",
-    "hoek": "^5.0.4"
+    "hoek": "^6.0.0"
   },
   "files": [
     "index.js",
