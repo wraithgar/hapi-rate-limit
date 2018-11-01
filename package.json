@@ -37,7 +37,7 @@
     "lib"
   ],
   "devDependencies": {
-    "catbox-memory": "^3.1.2",
+    "catbox-memory": "^4.0.0",
     "code": "^5.2.0",
     "eslint": "^5.5.0",
     "eslint-plugin-hapi": "^4.1.0",
