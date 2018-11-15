@@ -117,6 +117,7 @@ module.exports = [{
         },
         plugins: {
             'hapi-rate-limit': {
+                userPathLimit: true,
                 headers: false
             }
         }

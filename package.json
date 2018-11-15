@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "lab -f -dL",
-    "test": "lab -fL -m 3000 -t 100"
+    "test": "lab -fL -m 3000 -t 100 -v"
   },
   "repository": {
     "type": "git",

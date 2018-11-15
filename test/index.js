@@ -31,7 +31,7 @@ describe('hapi-rate-limit', () => {
                 return {
                     authenticate: function (request, h) {
 
-                        return h.authenticated({ credentials: { id: request.query.id, name: request.query.name } });
+                        return h.authenticated({ credentials: { ...request.query } });
                     }
                 };
             });
@@ -92,6 +92,20 @@ describe('hapi-rate-limit', () => {
 
             res = await server.inject({ method: 'GET', url: '/auth?id=2' });
             expect(res.headers['x-ratelimit-userremaining']).to.equal(299);
+        });
+
+        it('user with missing userAttribute', async () => {
+
+            let res;
+
+            res = await server.inject({ method: 'GET', url: '/auth?uuid=1' });
+            expect(res.headers['x-ratelimit-userremaining']).to.equal(299);
+
+            res = await server.inject({ method: 'GET', url: '/auth?uuid=1' });
+            expect(res.headers['x-ratelimit-userremaining']).to.equal(298);
+
+            res = await server.inject({ method: 'GET', url: '/auth?uuid=2' });
+            expect(res.headers['x-ratelimit-userremaining']).to.equal(297);
         });
 
         it('route configured user attribute', async () => {
@@ -244,7 +258,13 @@ describe('hapi-rate-limit', () => {
 
         it('route configured no headers', async () => {
 
-            const res = await server.inject({ method: 'GET', url: '/noHeaders' });
+            let res = await server.inject({ method: 'GET', url: '/noHeaders' });
+            expect(res.headers).to.not.include([
+                'x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset',
+                'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset',
+                'x-ratelimit-userpathlimit', 'x-ratelimit-userpathremaining', 'x-ratelimit-userpathreset'
+            ]);
+            res = await server.inject({ method: 'GET', url: '/noHeaders' });
             expect(res.headers).to.not.include([
                 'x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset',
                 'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset',
