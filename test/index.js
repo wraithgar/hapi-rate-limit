@@ -460,6 +460,7 @@ describe('hapi-rate-limit', () => {
     describe('configured user limit with numeric id', () => {
 
         let server;
+        let id = 10;
 
         beforeEach(async () => {
 
@@ -473,7 +474,7 @@ describe('hapi-rate-limit', () => {
                 return {
                     authenticate: function (request, h) {
 
-                        return h.authenticated({ credentials: { id: 10 } });
+                        return h.authenticated({ credentials: { id } });
                     }
                 };
             });
@@ -486,7 +487,8 @@ describe('hapi-rate-limit', () => {
                     userLimit: 2,
                     userCache: {
                         expiresIn: 500
-                    }
+                    },
+                    userWhitelist: [12]
                 }
             }]);
             server.route(require('./test-routes'));
@@ -520,6 +522,15 @@ describe('hapi-rate-limit', () => {
 
             expect(res.statusCode).to.equal(429);
             expect(res.headers).to.not.include(['x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset']);
+
+            id = 12;
+        });
+
+        it('disabled user limit with userWhitelist', async () => {
+
+            const res = await server.inject({ method: 'GET', url: '/auth' });
+            expect(res.headers['x-ratelimit-userlimit']).to.equal(false);
+            expect(res.headers).to.not.include(['x-ratelimit-userremaining', 'x-ratelimit-userreset']);
         });
 
     });
