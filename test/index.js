@@ -579,4 +579,66 @@ describe('hapi-rate-limit', () => {
 
 
     });
+
+    describe('configured user limit with strings joi converts to primatives', () => {
+
+        let server;
+
+        beforeEach(async () => {
+
+            server = Hapi.server({
+                autoListen: false,
+                cache: { engine: require('catbox-memory') }
+            });
+
+            server.events.on({ name: 'request', channels: ['error'] }, (request, event) => {
+
+                console.log(event.error);
+            });
+
+            server.auth.scheme('trusty', () => {
+
+                return {
+                    authenticate: function (request, h) {
+
+                        return h.authenticated({ credentials: { id: request.query.id, name: request.query.name } });
+                    }
+                };
+            });
+
+            server.auth.strategy('trusty', 'trusty');
+
+            await server.register([{
+                plugin: HapiRateLimit,
+                options: {
+                    userLimit: '2',
+                    userCache: {
+                        expiresIn: '500'
+                    },
+                    userPathLimit: 'false',
+                    pathLimit: 'false'
+                }
+            }]);
+            server.route(require('./test-routes'));
+            await server.initialize();
+        });
+
+        it('runs out of configured userLimit using strings', async () => {
+
+            let res;
+            res = await server.inject({ method: 'GET', url: '/defaults' });
+            expect(res.headers['x-ratelimit-userremaining']).to.equal(1);
+            expect(res.headers['x-ratelimit-userlimit']).to.equal(2);
+
+            res = await server.inject({ method: 'GET', url: '/defaults' });
+            expect(res.headers['x-ratelimit-userremaining']).to.equal(0);
+
+            res = await server.inject({ method: 'GET', url: '/defaults' });
+            expect(res.statusCode).to.equal(429);
+            await timeout(1000);
+            res = await server.inject({ method: 'GET', url: '/defaults' });
+            expect(res.headers['x-ratelimit-userremaining']).to.equal(1);
+            expect(res.headers['x-ratelimit-userlimit']).to.equal(2);
+        });
+    });
 });
