@@ -42,7 +42,7 @@
     "eslint": "^5.5.0",
     "eslint-plugin-hapi": "^4.1.0",
     "git-validate": "^2.2.4",
-    "hapi": "^17.5.4",
+    "hapi": "^18.0.0",
     "lab": "^18.0.0"
   }
 }
