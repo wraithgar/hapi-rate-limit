@@ -9,16 +9,12 @@ Lead Maintainer: [Gar](https://github.com/wraithgar)
 
 **hapi-rate-limit** is a plugin for [hapi](http://hapijs.com) that enables rate limiting.
 
-It relies on `cache` being defined in the server.
-
 ## Use
 
 ```javascript
 const Hapi = require('hapi');
 
-const server = Hapi.server({
-    cache: { engine: require('catbox-memory'), name: 'memory' }
-});
+const server = Hapi.server({});
 server.register({
     plugin: require('hapi-rate-limit'),
     options: {}

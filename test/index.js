@@ -22,8 +22,7 @@ describe('hapi-rate-limit', () => {
         beforeEach(async () => {
 
             server = Hapi.server({
-                autoListen: false,
-                cache: { engine: require('catbox-memory'), name: 'memory' }
+                autoListen: false
             });
 
             server.auth.scheme('trusty', () => {
@@ -348,8 +347,7 @@ describe('hapi-rate-limit', () => {
         beforeEach(async () => {
 
             server = Hapi.server({
-                autoListen: false,
-                cache: { engine: require('catbox-memory') }
+                autoListen: false
             });
 
             server.events.on({ name: 'request', channels: ['error'] }, (request, event) => {
@@ -418,8 +416,7 @@ describe('hapi-rate-limit', () => {
         beforeEach(async () => {
 
             server = Hapi.server({
-                autoListen: false,
-                cache: { engine: require('catbox-memory') }
+                autoListen: false
             });
 
             server.auth.scheme('trusty', () => {
@@ -465,8 +462,7 @@ describe('hapi-rate-limit', () => {
         beforeEach(async () => {
 
             server = Hapi.server({
-                autoListen: false,
-                cache: { engine: require('catbox-memory') }
+                autoListen: false
             });
 
             server.auth.scheme('trusty', () => {
@@ -542,8 +538,7 @@ describe('hapi-rate-limit', () => {
         beforeEach(async () => {
 
             server = Hapi.server({
-                autoListen: false,
-                cache: { engine: require('catbox-memory') }
+                autoListen: false
             });
 
             server.auth.scheme('trusty', () => {
@@ -587,8 +582,7 @@ describe('hapi-rate-limit', () => {
         beforeEach(async () => {
 
             server = Hapi.server({
-                autoListen: false,
-                cache: { engine: require('catbox-memory') }
+                autoListen: false
             });
 
             server.events.on({ name: 'request', channels: ['error'] }, (request, event) => {
@@ -650,7 +644,7 @@ describe('hapi-rate-limit', () => {
         const configureWithCacheName = async (cacheName) => {
 
             const userCache = { segment: 'default' };
-            const cache = { engine: require('catbox-memory') };
+            const cache = { provider: require('catbox-memory') };
 
             if (cacheName) {
                 userCache.segment = cacheName;
@@ -660,9 +654,10 @@ describe('hapi-rate-limit', () => {
             }
 
             server = Hapi.server({
-                autoListen: false,
-                cache
+                autoListen: false
             });
+
+            server.cache.provision(cache);
 
             server.events.on({ name: 'request', channels: ['error'] }, (request, event) => {
 
