@@ -641,4 +641,87 @@ describe('hapi-rate-limit', () => {
             expect(res.headers['x-ratelimit-userlimit']).to.equal(2);
         });
     });
+
+    describe('configured cache', () => {
+
+        let server;
+        const localIp = '127.0.0.1';
+
+        const configureWithCacheName = async (cacheName) => {
+
+            const userCache = { segment: 'default' };
+            const cache = { engine: require('catbox-memory') };
+
+            if (cacheName) {
+                userCache.segment = cacheName;
+                userCache.cache = cacheName;
+
+                cache.name = cacheName;
+            }
+
+            server = Hapi.server({
+                autoListen: false,
+                cache
+            });
+
+            server.events.on({ name: 'request', channels: ['error'] }, (request, event) => {
+
+                console.log(event.error);
+            });
+
+            server.auth.scheme('trusty', () => {
+
+                return {
+                    authenticate: function (request, h) {
+
+                        return h.authenticated({ credentials: { id: request.query.id, name: request.query.name } });
+                    }
+                };
+            });
+
+            server.auth.strategy('trusty', 'trusty');
+            server.route(require('./test-routes'));
+
+            await server.register([{
+                plugin: HapiRateLimit,
+                options: {
+                    addressOnly: true,
+                    userCache,
+                    userPathLimit: false,
+                    pathLimit: false
+                }
+            }]);
+            await server.initialize();
+        };
+
+        it('uses non-default hapi cache', async () => {
+
+            const cacheName = 'a-custom-cache-name';
+            await configureWithCacheName(cacheName);
+
+            const rateLimitCache = server.cache({ segment: cacheName, cache: cacheName, shared: true });
+            const defaultCache = server.cache({ segment: 'default', shared: true });
+
+            await server.inject({ method: 'GET', url: '/addressOnly?id=1' });
+            expect(await rateLimitCache.get(localIp)).to.equal(1);
+            expect(await defaultCache.get(localIp)).to.be.null();
+
+            await server.inject({ method: 'GET', url: '/addressOnly?id=1' });
+            expect(await rateLimitCache.get(localIp)).to.equal(2);
+            expect(await defaultCache.get(localIp)).to.be.null();
+        });
+
+        it('uses default hapi cache when not defined', async () => {
+
+            await configureWithCacheName();
+
+            const defaultCache = server.cache({ segment: 'default', shared: true });
+
+            await server.inject({ method: 'GET', url: '/addressOnly?id=1' });
+            expect(await defaultCache.get(localIp)).to.equal(1);
+
+            await server.inject({ method: 'GET', url: '/addressOnly?id=1' });
+            expect(await defaultCache.get(localIp)).to.equal(2);
+        });
+    });
 });

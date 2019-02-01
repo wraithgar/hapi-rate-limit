@@ -32,8 +32,9 @@ Defaults are given here
 - `enabled`: `true` whether or not rate limiting is enabled at all. Set this to `false` in a route's config to bypass all rate limiting for that route
 - `userLimit`: `300` number of total requests a user can make per period.  Set to `false` to disable limiting requests per user.
 - `userCache`: Object with the following properties:
-    -  `segment`: `hapi-rate-limit-user` Name of the cache segment to use for storing user rate limit info
+    - `segment`: `hapi-rate-limit-user` Name of the cache segment to use for storing user rate limit info
     - `expiresIn`: `600000` Time (in milliseconds) of period for `userLimit`
+    - `cache`: Optional cache name configured in server.cache. Defaults to the default cache.
 - `userAttribute`: `id` credentials attribute to use when determining distinct authenticated users
 - `userWhitelist`: `[]` array of users (as defined by `userAttribute` for whom to bypass rate limiting.  This is only applied to authenticated users, for ip whitelisting use `ipWhitelist`.
 - `addressOnly`: `false` if true, only consider user address when determining distinct authenticated users
@@ -41,10 +42,12 @@ Defaults are given here
 - `pathCache`: Object with the following properties:
 	- `segment`: `hapi-rate-limit-path` Name of the cache segment to use for storing path rate limit info
 	- `expiresIn`: `60000` Time (in milliseconds) of period for `pathLimit`
+    - `cache`: Optional cache name configured in server.cache. Defaults to the default cache.
 - `userPathLimit`: `false` number of total requests that can be made on a given path per user per period.  Set to `false` to disable limiting requests per path per user.
 - `userPathCache`: Object with the following properties:
 	- `segment`: `hapi-rate-limit-userPath` Name of the cache segment to use for storing userPath rate limit info
 	- `expiresIn`: `60000` Time (in milliseconds) of period for `userPathLimit`
+    - `cache`: Optional cache name configured in server.cache. Defaults to the default cache.
 - `headers`: `true` Whether or not to include headers in responses
 - `ipWhitelist`: `[]` array of IPs for whom to bypass rate limiting.  Note that a whitelisted IP would also bypass restrictions an authenticated user would otherwise have.
 - `trustProxy`: `false` If true, honor the `X-Forwarded-For` header.  See note below.
