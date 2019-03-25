@@ -316,11 +316,10 @@ describe('hapi-rate-limit', () => {
             expect(res.headers['x-ratelimit-userremaining']).to.equal(299);
         });
 
-        it('route configured ipWhitelist', async () => {
+        it('route configured ipWhitelist for specified ip whitelist', async () => {
 
             const res = await server.inject({ method: 'GET', url: '/ipWhitelist', headers: { 'x-forwarded-for': '127.0.0.2, 127.0.0.1' } });
-            expect(res.headers).to.include(['x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset']);
-            expect(res.headers).to.not.include(['x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset']);
+            expect(res.headers).to.not.include(['x-ratelimit-pathlimit', 'x-ratelimit-pathremaining', 'x-ratelimit-pathreset', 'x-ratelimit-userlimit', 'x-ratelimit-userremaining', 'x-ratelimit-userreset']);
         });
 
         it('route configured userWhitelist', async () => {
@@ -572,6 +571,57 @@ describe('hapi-rate-limit', () => {
             expect(res.headers['x-ratelimit-userremaining']).to.equal(299);
         });
 
+
+    });
+
+    describe('configured ip whitelist allows ranges', () => {
+
+        let server;
+
+        beforeEach(async () => {
+
+            server = Hapi.server({
+                autoListen: false
+            });
+
+            server.auth.scheme('trusty', () => {
+
+                return {
+                    authenticate: function (request, h) {
+
+                        return h.authenticated({ credentials: { id: request.query.id, name: request.query.name } });
+                    }
+                };
+            });
+            server.auth.strategy('trusty', 'trusty');
+
+            await server.register([{
+                plugin: HapiRateLimit,
+                options: {
+                    ipWhitelist: ['127.0.0.0/8'],
+                    trustProxy: true
+                }
+            }]);
+            server.route(require('./test-routes'));
+            await server.initialize();
+        });
+
+        it('request from the ip whitelisted range should not count towards path or user remaining', async () => {
+
+            let res;
+            res = await server.inject({ method: 'GET', url: '/defaults', headers: { 'x-forwarded-for': '127.0.1.256' } });
+            expect(res.headers['x-ratelimit-userremaining']).to.equal(299);
+            expect(res.headers['x-ratelimit-pathremaining']).to.equal(49);
+
+            res = await server.inject({ method: 'GET', url: '/defaults', headers: { 'x-forwarded-for': '127.0.0.1' } });
+            expect(res.headers['x-ratelimit-userremaining']).to.undefined();
+            expect(res.headers['x-ratelimit-pathremaining']).to.undefined();
+
+            res = await server.inject({ method: 'GET', url: '/defaults', headers: { 'x-forwarded-for': '127.0.1.256' } });
+            expect(res.headers['x-ratelimit-userremaining']).to.equal(298);
+            expect(res.headers['x-ratelimit-pathremaining']).to.equal(48);
+
+        });
 
     });
 
