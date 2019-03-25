@@ -276,7 +276,7 @@ module.exports = [{
         },
         plugins: {
             'hapi-rate-limit': {
-                ipWhitelist: ['127.0.0.1']
+                ipWhitelist: ['127.0.0.0/16']
             }
         }
     }
