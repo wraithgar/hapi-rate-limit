@@ -337,6 +337,37 @@ describe('hapi-rate-limit', () => {
             expect(res.headers['x-ratelimit-userremaining']).to.equal(299);
         });
 
+
+        it('multiple plugin registrations do not share cache instances', async () => {
+
+            const secondServer = Hapi.server({
+                autoListen: false
+            });
+
+            secondServer.auth.scheme('trusty', () => {
+
+                return {
+                    authenticate: function (request, h) {
+
+                        return h.authenticated({ credentials: { ...request.query } });
+                    }
+                };
+            });
+            secondServer.auth.strategy('trusty', 'trusty');
+
+            await secondServer.register(HapiRateLimit);
+
+            secondServer.route(require('./test-routes'));
+            await secondServer.initialize();
+
+            let res;
+            res = await server.inject({ method: 'GET', url: '/defaults' });
+
+            res = await secondServer.inject({ method: 'GET', url: '/defaults' });
+            expect(res.headers['x-ratelimit-pathremaining']).to.equal(49);
+            expect(res.headers['x-ratelimit-userremaining']).to.equal(299);
+        });
+
     });
 
     describe('configured user limit', () => {
