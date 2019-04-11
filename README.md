@@ -48,6 +48,7 @@ Defaults are given here
 - `ipWhitelist`: `[]` array of IPs for whom to bypass rate limiting.  Note that a whitelisted IP would also bypass restrictions an authenticated user would otherwise have.
 - `trustProxy`: `false` If true, honor the `X-Forwarded-For` header.  See note below.
 - `getIpFromProxyHeader`: `undefined` a function which will extract the remote address from the `X-Forwarded-For` header. The default implementation takes the first entry.
+- `limitExceeded`: `Boom.tooManyRequests('Rate limit exceeded');` a `function(request)` that returns a custom response to be used when the rate limit is hit. If the function returns a Boom error, it will be used. If it returns an object, the response will be 200 and the payload that object.
 
 ## Users
 

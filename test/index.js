@@ -3,6 +3,8 @@
 const lab = exports.lab = require('lab').script();
 const expect = require('code').expect;
 
+const Boom = require('boom');
+
 const beforeEach = lab.beforeEach;
 const describe = lab.describe;
 const it = lab.it;
@@ -664,6 +666,116 @@ describe('hapi-rate-limit', () => {
             res = await server.inject({ method: 'GET', url: '/defaults' });
             expect(res.headers['x-ratelimit-userremaining']).to.equal(1);
             expect(res.headers['x-ratelimit-userlimit']).to.equal(2);
+        });
+    });
+
+    describe('configured limitExceededResponse', () => {
+
+        describe('is Boom', () => {
+
+            let server;
+
+            beforeEach(async () => {
+
+                server = Hapi.server({
+                    autoListen: false
+                });
+
+                server.auth.scheme('trusty', () => {
+
+                    return {
+                        authenticate: function (request, h) {
+
+                            return h.authenticated({ credentials: { ...request.query } });
+                        }
+                    };
+                });
+                server.auth.strategy('trusty', 'trusty');
+
+                await server.register([{
+                    plugin: HapiRateLimit,
+                    options: {
+                        userLimit: 2,
+                        userCache: {
+                            expiresIn: 500
+                        },
+                        limitExceededResponse: () => Boom.unauthorized('Unauthorized')
+                    }
+                }]
+                );
+
+                server.route(require('./test-routes'));
+                await server.initialize();
+            });
+
+            it('uses the configured limitExceededResponse', async () => {
+
+                let res;
+                res = await server.inject({ method: 'GET', url: '/defaults' });
+                expect(res.headers['x-ratelimit-userremaining']).to.equal(1);
+                expect(res.headers['x-ratelimit-userlimit']).to.equal(2);
+
+                res = await server.inject({ method: 'GET', url: '/defaults' });
+                expect(res.headers['x-ratelimit-userremaining']).to.equal(0);
+
+                res = await server.inject({ method: 'GET', url: '/defaults' });
+                expect(res.statusCode).to.equal(401);
+            });
+        });
+
+        describe('is not Boom', () => {
+
+            let server;
+
+            beforeEach(async () => {
+
+                server = Hapi.server({
+                    autoListen: false
+                });
+
+                server.auth.scheme('trusty', () => {
+
+                    return {
+                        authenticate: function (request, h) {
+
+                            return h.authenticated({ credentials: { ...request.query } });
+                        }
+                    };
+                });
+                server.auth.strategy('trusty', 'trusty');
+
+                await server.register([{
+                    plugin: HapiRateLimit,
+                    options: {
+                        userLimit: 2,
+                        userCache: {
+                            expiresIn: 500
+                        },
+                        limitExceededResponse: (request) => ({ path: request.path })
+                    }
+                }]
+                );
+
+                server.route(require('./test-routes'));
+                await server.initialize();
+            });
+
+            it('uses the configured limitExceededResponse', async () => {
+
+                let res;
+                res = await server.inject({ method: 'GET', url: '/defaults' });
+                expect(res.headers['x-ratelimit-userremaining']).to.equal(1);
+                expect(res.headers['x-ratelimit-userlimit']).to.equal(2);
+
+                res = await server.inject({ method: 'GET', url: '/defaults' });
+                expect(res.headers['x-ratelimit-userremaining']).to.equal(0);
+
+                res = await server.inject({ method: 'GET', url: '/defaults' });
+                expect(res.statusCode).to.equal(200);
+
+                const data = JSON.parse(res.payload);
+                expect(data.path).to.equal('/defaults');
+            });
         });
     });
 
