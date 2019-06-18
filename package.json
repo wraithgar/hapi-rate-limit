@@ -37,12 +37,13 @@
     "lib"
   ],
   "devDependencies": {
+    "@hapi/code": "^5.3.1",
+    "@hapi/hapi": "^18.3.1",
+    "@hapi/lab": "^19.1.0",
     "catbox-memory": "^4.0.0",
-    "code": "^5.2.0",
     "eslint": "^5.15.3",
+    "eslint-config-hapi": "^12.0.0",
     "eslint-plugin-hapi": "^4.1.0",
-    "git-validate": "^2.2.4",
-    "hapi": "^18.0.1",
-    "lab": "^18.0.2"
+    "git-validate": "^2.2.4"
   }
 }

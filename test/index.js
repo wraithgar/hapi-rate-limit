@@ -1,7 +1,7 @@
 'use strict';
 
-const lab = exports.lab = require('lab').script();
-const expect = require('code').expect;
+const lab = exports.lab = require('@hapi/lab').script();
+const expect = require('@hapi/code').expect;
 
 const beforeEach = lab.beforeEach;
 const describe = lab.describe;
@@ -10,7 +10,7 @@ const { promisify } = require('util');
 
 const timeout = promisify(setTimeout);
 
-const Hapi = require('hapi');
+const Hapi = require('@hapi/hapi');
 const HapiRateLimit = require('../');
 
 describe('hapi-rate-limit', () => {
