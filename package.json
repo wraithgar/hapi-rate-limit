@@ -26,7 +26,7 @@
   ],
   "homepage": "https://github.com/wraithgar/hapi-rate-limit#readme",
   "peerDependencies": {
-    "hapi": ">=17.0.0"
+    "@hapi/hapi": ">=18.0.0"
   },
   "dependencies": {
     "@hapi/boom": "^7.4.2",
