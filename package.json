@@ -46,7 +46,7 @@
         "@hapi/hapi": ">=18.0.0"
     },
     "dependencies": {
-        "@hapi/boom": "^7.4.2",
+        "@hapi/boom": "^8.0.0",
         "@hapi/joi": "^16.0.0"
     },
     "files": [
