@@ -56,7 +56,7 @@
     "devDependencies": {
         "@hapi/code": "^6.0.0",
         "@hapi/hapi": "^18.4.0",
-        "@hapi/lab": "^20.3.2",
+        "@hapi/lab": "^21.0.0",
         "catbox-memory": "^4.0.1",
         "eslint": "^6.5.1",
         "eslint-config-prettier": "^6.3.0",
