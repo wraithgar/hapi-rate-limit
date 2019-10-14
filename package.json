@@ -54,7 +54,7 @@
         "lib"
     ],
     "devDependencies": {
-        "@hapi/code": "^6.0.0",
+        "@hapi/code": "^7.0.0",
         "@hapi/hapi": "^18.4.0",
         "@hapi/lab": "^20.3.2",
         "catbox-memory": "^4.0.1",
