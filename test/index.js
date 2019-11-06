@@ -289,6 +289,11 @@ describe('hapi-rate-limit', () => {
 
             res = await server.inject({ method: 'GET', url: '/lowPathLimit' });
             expect(res.statusCode).to.equal(429);
+            expect(res.headers['x-ratelimit-pathremaining']).to.equal(-1);
+
+            res = await server.inject({ method: 'GET', url: '/lowPathLimit' });
+            expect(res.statusCode).to.equal(429);
+            expect(res.headers['x-ratelimit-pathremaining']).to.equal(-1);
         });
 
         it('route configured userPathLimit', async () => {
@@ -379,6 +384,14 @@ describe('hapi-rate-limit', () => {
                 url: '/lowUserPathLimit'
             });
             expect(res.statusCode).to.equal(429);
+            expect(res.headers['x-ratelimit-userpathremaining']).to.equal(-1);
+
+            res = await server.inject({
+                method: 'GET',
+                url: '/lowUserPathLimit'
+            });
+            expect(res.statusCode).to.equal(429);
+            expect(res.headers['x-ratelimit-userpathremaining']).to.equal(-1);
         });
 
         it('route configured no headers', async () => {
