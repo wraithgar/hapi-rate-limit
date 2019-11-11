@@ -7,8 +7,7 @@ module.exports = [
         method: 'GET',
         path: '/defaults',
         config: {
-            description:
-                'Route with no special config, letting defaults take over',
+            description: 'Route with no special config, letting defaults take over',
             handler: request => {
                 return request.path;
             }
@@ -49,8 +48,7 @@ module.exports = [
         method: 'GET',
         path: '/addressOnlyUserPathLimit',
         config: {
-            description:
-                'Authenticated route with addressOnly set with userPathLimit and no user limit',
+            description: 'Authenticated route with addressOnly set with userPathLimit and no user limit',
             handler: function(request) {
                 return request.path;
             },
@@ -70,8 +68,7 @@ module.exports = [
         method: 'GET',
         path: '/authName',
         config: {
-            description:
-                'Authenticated route with name set as the userAttribute',
+            description: 'Authenticated route with name set as the userAttribute',
             handler: function(request) {
                 return request.path;
             },
