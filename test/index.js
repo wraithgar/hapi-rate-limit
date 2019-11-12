@@ -876,6 +876,62 @@ describe('hapi-rate-limit', () => {
         });
     });
 
+    describe('configured limit exceeded response', () => {
+        let server;
+
+        beforeEach(async () => {
+            server = Hapi.server({
+                autoListen: false
+            });
+
+            server.auth.scheme('trusty', () => {
+                return {
+                    authenticate: function(request, h) {
+                        return h.authenticated({
+                            credentials: { ...request.query }
+                        });
+                    }
+                };
+            });
+            server.auth.strategy('trusty', 'trusty');
+
+            await server.register([
+                {
+                    plugin: HapiRateLimit,
+                    options: {
+                        limitExceededResponse: function(request, h) {
+                            return h
+                                .response('custom response')
+                                .code(477)
+                                .takeover();
+                        }
+                    }
+                }
+            ]);
+
+            server.route(require('./test-routes'));
+            await server.initialize();
+        });
+
+        it('gets correct responses with rate limiting headers', async () => {
+            let res;
+            res = await server.inject({ method: 'GET', url: '/lowPathLimit' });
+            expect(res.headers['x-ratelimit-pathremaining']).to.equal(1);
+
+            res = await server.inject({ method: 'GET', url: '/lowPathLimit' });
+            expect(res.headers['x-ratelimit-pathremaining']).to.equal(0);
+
+            res = await server.inject({ method: 'GET', url: '/lowPathLimit' });
+            expect(res.result).to.equal('custom response');
+            expect(res.statusCode).to.equal(477);
+            expect(res.headers['x-ratelimit-pathremaining']).to.equal(-1);
+
+            res = await server.inject({ method: 'GET', url: '/lowPathLimit' });
+            expect(res.result).to.equal('custom response');
+            expect(res.statusCode).to.equal(477);
+            expect(res.headers['x-ratelimit-pathremaining']).to.equal(-1);
+        });
+    });
     describe('configured cache', () => {
         let server;
         const localIp = '127.0.0.1';
