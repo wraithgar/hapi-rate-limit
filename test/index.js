@@ -63,15 +63,11 @@ describe('hapi-rate-limit', () => {
             expect(res.headers['x-ratelimit-pathlimit']).to.equal(50);
             expect(res.headers['x-ratelimit-pathremaining']).to.equal(49);
             expect(res.headers['x-ratelimit-pathreset']).to.be.a.number();
-            expect(
-                res.headers['x-ratelimit-pathreset'] - Date.now()
-            ).to.be.within(59900, 60100);
+            expect(res.headers['x-ratelimit-pathreset'] - Date.now()).to.be.within(59900, 60100);
             expect(res.headers['x-ratelimit-userlimit']).to.equal(300);
             expect(res.headers['x-ratelimit-userremaining']).to.equal(299);
             expect(res.headers['x-ratelimit-userreset']).to.be.a.number();
-            expect(
-                res.headers['x-ratelimit-userreset'] - Date.now()
-            ).to.be.within(599900, 600100);
+            expect(res.headers['x-ratelimit-userreset'] - Date.now()).to.be.within(599900, 600100);
 
             res = await server.inject({ method: 'GET', url: '/defaults' });
             expect(res.headers).to.include([
@@ -89,14 +85,10 @@ describe('hapi-rate-limit', () => {
             ]);
             expect(res.headers['x-ratelimit-pathlimit']).to.equal(50);
             expect(res.headers['x-ratelimit-pathremaining']).to.equal(48);
-            expect(
-                res.headers['x-ratelimit-pathreset'] - pathReset
-            ).to.be.within(-100, 100);
+            expect(res.headers['x-ratelimit-pathreset'] - pathReset).to.be.within(-100, 100);
             expect(res.headers['x-ratelimit-userlimit']).to.equal(300);
             expect(res.headers['x-ratelimit-userremaining']).to.equal(298);
-            expect(
-                res.headers['x-ratelimit-userreset'] - userReset
-            ).to.be.within(-100, 100);
+            expect(res.headers['x-ratelimit-userreset'] - userReset).to.be.within(-100, 100);
         });
 
         it('authenticated request', async () => {
@@ -259,9 +251,7 @@ describe('hapi-rate-limit', () => {
             expect(res.headers['x-ratelimit-pathlimit']).to.equal(50);
             expect(res.headers['x-ratelimit-pathremaining']).to.equal(49);
             expect(res.headers['x-ratelimit-pathreset']).to.be.a.number();
-            expect(
-                res.headers['x-ratelimit-pathreset'] - Date.now()
-            ).to.be.within(59900, 60100);
+            expect(res.headers['x-ratelimit-pathreset'] - Date.now()).to.be.within(59900, 60100);
 
             res = await server.inject({ method: 'GET', url: '/setPathLimit' });
             expect(res.headers).to.include([
@@ -274,9 +264,7 @@ describe('hapi-rate-limit', () => {
             ]);
             expect(res.headers['x-ratelimit-pathlimit']).to.equal(50);
             expect(res.headers['x-ratelimit-pathremaining']).to.equal(48);
-            expect(
-                res.headers['x-ratelimit-pathreset'] - pathReset
-            ).to.be.within(-100, 100);
+            expect(res.headers['x-ratelimit-pathreset'] - pathReset).to.be.within(-100, 100);
         });
 
         it('runs out of pathLimit', async () => {
@@ -289,6 +277,11 @@ describe('hapi-rate-limit', () => {
 
             res = await server.inject({ method: 'GET', url: '/lowPathLimit' });
             expect(res.statusCode).to.equal(429);
+            expect(res.headers['x-ratelimit-pathremaining']).to.equal(-1);
+
+            res = await server.inject({ method: 'GET', url: '/lowPathLimit' });
+            expect(res.statusCode).to.equal(429);
+            expect(res.headers['x-ratelimit-pathremaining']).to.equal(-1);
         });
 
         it('route configured userPathLimit', async () => {
@@ -312,9 +305,7 @@ describe('hapi-rate-limit', () => {
             expect(res.headers['x-ratelimit-userpathlimit']).to.equal(50);
             expect(res.headers['x-ratelimit-userpathremaining']).to.equal(49);
             expect(res.headers['x-ratelimit-userpathreset']).to.be.a.number();
-            expect(
-                res.headers['x-ratelimit-userpathreset'] - Date.now()
-            ).to.be.within(59900, 60100);
+            expect(res.headers['x-ratelimit-userpathreset'] - Date.now()).to.be.within(59900, 60100);
 
             res = await server.inject({
                 method: 'GET',
@@ -334,9 +325,7 @@ describe('hapi-rate-limit', () => {
             expect(res.headers['x-ratelimit-userpathlimit']).to.equal(50);
             expect(res.headers['x-ratelimit-userpathremaining']).to.equal(49);
             expect(res.headers['x-ratelimit-userpathreset']).to.be.a.number();
-            expect(
-                res.headers['x-ratelimit-userpathreset'] - Date.now()
-            ).to.be.within(59900, 60100);
+            expect(res.headers['x-ratelimit-userpathreset'] - Date.now()).to.be.within(59900, 60100);
 
             res = await server.inject({
                 method: 'GET',
@@ -355,9 +344,7 @@ describe('hapi-rate-limit', () => {
             ]);
             expect(res.headers['x-ratelimit-userpathlimit']).to.equal(50);
             expect(res.headers['x-ratelimit-userpathremaining']).to.equal(48);
-            expect(
-                res.headers['x-ratelimit-userpathreset'] - userPathReset
-            ).to.be.within(-100, 100);
+            expect(res.headers['x-ratelimit-userpathreset'] - userPathReset).to.be.within(-100, 100);
         });
 
         it('runs out of userPathLimit', async () => {
@@ -379,6 +366,14 @@ describe('hapi-rate-limit', () => {
                 url: '/lowUserPathLimit'
             });
             expect(res.statusCode).to.equal(429);
+            expect(res.headers['x-ratelimit-userpathremaining']).to.equal(-1);
+
+            res = await server.inject({
+                method: 'GET',
+                url: '/lowUserPathLimit'
+            });
+            expect(res.statusCode).to.equal(429);
+            expect(res.headers['x-ratelimit-userpathremaining']).to.equal(-1);
         });
 
         it('route configured no headers', async () => {
@@ -429,9 +424,7 @@ describe('hapi-rate-limit', () => {
             const userCount = res.headers['x-ratelimit-userremaining'];
 
             res = await server.inject({ method: 'GET', url: '/notfound' });
-            expect(
-                userCount - res.headers['x-ratelimit-userremaining']
-            ).to.equal(1);
+            expect(userCount - res.headers['x-ratelimit-userremaining']).to.equal(1);
         });
 
         it('404 reply from internal hapi catchall', async () => {
@@ -566,12 +559,9 @@ describe('hapi-rate-limit', () => {
                 autoListen: false
             });
 
-            server.events.on(
-                { name: 'request', channels: ['error'] },
-                (request, event) => {
-                    console.log(event.error);
-                }
-            );
+            server.events.on({ name: 'request', channels: ['error'] }, (request, event) => {
+                console.log(event.error);
+            });
 
             server.auth.scheme('trusty', () => {
                 return {
@@ -768,10 +758,7 @@ describe('hapi-rate-limit', () => {
         it('disabled user limit with userWhitelist', async () => {
             const res = await server.inject({ method: 'GET', url: '/auth' });
             expect(res.headers['x-ratelimit-userlimit']).to.equal(false);
-            expect(res.headers).to.not.include([
-                'x-ratelimit-userremaining',
-                'x-ratelimit-userreset'
-            ]);
+            expect(res.headers).to.not.include(['x-ratelimit-userremaining', 'x-ratelimit-userreset']);
         });
     });
 
@@ -801,8 +788,7 @@ describe('hapi-rate-limit', () => {
                 {
                     plugin: HapiRateLimit,
                     options: {
-                        getIpFromProxyHeader: xForwardedFor =>
-                            xForwardedFor.split(',')[1] // Take always the second one
+                        getIpFromProxyHeader: xForwardedFor => xForwardedFor.split(',')[1] // Take always the second one
                     }
                 }
             ]);
@@ -836,12 +822,9 @@ describe('hapi-rate-limit', () => {
                 autoListen: false
             });
 
-            server.events.on(
-                { name: 'request', channels: ['error'] },
-                (request, event) => {
-                    console.log(event.error);
-                }
-            );
+            server.events.on({ name: 'request', channels: ['error'] }, (request, event) => {
+                console.log(event.error);
+            });
 
             server.auth.scheme('trusty', () => {
                 return {
@@ -893,6 +876,62 @@ describe('hapi-rate-limit', () => {
         });
     });
 
+    describe('configured limit exceeded response', () => {
+        let server;
+
+        beforeEach(async () => {
+            server = Hapi.server({
+                autoListen: false
+            });
+
+            server.auth.scheme('trusty', () => {
+                return {
+                    authenticate: function(request, h) {
+                        return h.authenticated({
+                            credentials: { ...request.query }
+                        });
+                    }
+                };
+            });
+            server.auth.strategy('trusty', 'trusty');
+
+            await server.register([
+                {
+                    plugin: HapiRateLimit,
+                    options: {
+                        limitExceededResponse: function(request, h) {
+                            return h
+                                .response('custom response')
+                                .code(477)
+                                .takeover();
+                        }
+                    }
+                }
+            ]);
+
+            server.route(require('./test-routes'));
+            await server.initialize();
+        });
+
+        it('gets correct responses with rate limiting headers', async () => {
+            let res;
+            res = await server.inject({ method: 'GET', url: '/lowPathLimit' });
+            expect(res.headers['x-ratelimit-pathremaining']).to.equal(1);
+
+            res = await server.inject({ method: 'GET', url: '/lowPathLimit' });
+            expect(res.headers['x-ratelimit-pathremaining']).to.equal(0);
+
+            res = await server.inject({ method: 'GET', url: '/lowPathLimit' });
+            expect(res.result).to.equal('custom response');
+            expect(res.statusCode).to.equal(477);
+            expect(res.headers['x-ratelimit-pathremaining']).to.equal(-1);
+
+            res = await server.inject({ method: 'GET', url: '/lowPathLimit' });
+            expect(res.result).to.equal('custom response');
+            expect(res.statusCode).to.equal(477);
+            expect(res.headers['x-ratelimit-pathremaining']).to.equal(-1);
+        });
+    });
     describe('configured cache', () => {
         let server;
         const localIp = '127.0.0.1';
@@ -914,12 +953,9 @@ describe('hapi-rate-limit', () => {
 
             server.cache.provision(cache);
 
-            server.events.on(
-                { name: 'request', channels: ['error'] },
-                (request, event) => {
-                    console.log(event.error);
-                }
-            );
+            server.events.on({ name: 'request', channels: ['error'] }, (request, event) => {
+                console.log(event.error);
+            });
 
             server.auth.scheme('trusty', () => {
                 return {
