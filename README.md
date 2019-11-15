@@ -48,7 +48,9 @@ Defaults are given here
 - `ipWhitelist`: `[]` array of IPs for whom to bypass rate limiting.  Note that a whitelisted IP would also bypass restrictions an authenticated user would otherwise have.
 - `trustProxy`: `false` If true, honor the `X-Forwarded-For` header.  See note below.
 - `getIpFromProxyHeader`: `undefined` a function which will extract the remote address from the `X-Forwarded-For` header. The default implementation takes the first entry.
-`limitExceededResponse`: `() => Boom.tooManyRequests('Rate limit exceeded');` a `function(request, h)` that returns a custom response to be used when the rate limit is hit. If the function returns a Boom error, it will be used. If it returns an object, the response will be 200 and the payload whatever the function returns.
+- `limitExceededResponse`: `() => Boom.tooManyRequests('Rate limit exceeded');` a `function(request, h)` that returns a custom response to be used when the rate limit is hit. If the function returns a Boom error, it will be used. If it returns an object, the response will be 200 and the payload whatever the function returns.
+- `authLimit`: 5 number of total separate invalid auth attempts that can be made from any given IP. Once that limit has been reached the offending IP will be blocked before hapi's auth layer runs. Set to `false` to disable this feature.
+- `authToken`: `authToken` this is the attribute that will be looked for either in auth artifacts, or in boom data for thrown errors to rate limit invalid auth attempts.  For instance you would set `artifacts.authToken` to the value of `headers.authorization` to rate limit invalid authorization headers.
 
 ## Users
 
@@ -57,6 +59,9 @@ A user is considered a single `remoteAddress` for routes that are unauthenticate
 If `trustProxy` is true, the address from the `X-Forwarded-For` header will be use instead of `remoteAddress`, if present.
 
 If `trustProxy` is true and `getIpFromProxyHeader` is not defined, the address will be determined using the first entry in the `X-Forwarded-For` header.
+
+
+## Auth
 
 ## Proxies
 
@@ -79,6 +84,8 @@ The following headers will be included in server responses if their respective l
 - `x-ratelimit-userpathlimit`: Will equal `userPathLimit`
 - `x-ratelimit-userpathremaining`: Remaining number of requests user has this period for this path
 - `x-ratelimit-userpathreset`: Time (in milliseconds) until reset of `userPathLimit` period
+
+Note that authLimit does not generate any headers. It is not in your best interest to let bad actors know what their limits are when brute forcing your auth systems.
 
 ## Per-route settings
 
