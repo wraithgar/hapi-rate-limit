@@ -11,6 +11,7 @@ const { promisify } = require('util');
 const timeout = promisify(setTimeout);
 
 const Hapi = require('@hapi/hapi');
+const Boom = require('@hapi/boom');
 const HapiRateLimit = require('../');
 
 describe('hapi-rate-limit', () => {
@@ -25,6 +26,12 @@ describe('hapi-rate-limit', () => {
             server.auth.scheme('trusty', () => {
                 return {
                     authenticate: function(request, h) {
+                        if (request.query.fail) {
+                            return h.unauthenticated(Boom.unauthorized(), { credentials: {}, artifacts: request.query })
+                        }
+                        if (request.query.error) {
+                            throw Boom.notAcceptable(null, request.query)
+                        }
                         return h.authenticated({
                             credentials: { ...request.query }
                         });
@@ -102,6 +109,32 @@ describe('hapi-rate-limit', () => {
 
             res = await server.inject({ method: 'GET', url: '/auth?id=2' });
             expect(res.headers['x-ratelimit-userremaining']).to.equal(299);
+
+        })
+
+        it('bad auth tokens', async () => {
+
+            let res
+            await server.inject({ method: 'GET', url: '/auth?authToken=one&id=3&fail=true' })
+            await server.inject({ method: 'GET', url: '/auth?authToken=two&id=3&fail=true' })
+            await server.inject({ method: 'GET', url: '/auth?authToken=three&id=3&fail=true' })
+            await server.inject({ method: 'GET', url: '/auth?authToken=four&id=3&fail=true' })
+            await server.inject({ method: 'GET', url: '/auth?authToken=five&id=3&fail=true' })
+            await server.inject({ method: 'GET', url: '/auth?authToken=six&id=3&fail=true' })
+            // token list is now over the default limit of 5
+
+            res = await server.inject({ method: 'GET', url: '/auth?authToken=seven&id=3&fail=true' })
+            expect(res.statusCode).to.equal(429)
+
+            await server.inject({ method: 'GET', url: '/auth?authToken=one&id=4&error=true', remoteAddress: '127.0.0.2' })
+            await server.inject({ method: 'GET', url: '/auth?authToken=two&id=4&error=true', remoteAddress: '127.0.0.2' })
+            await server.inject({ method: 'GET', url: '/auth?authToken=three&id=4&error=true', remoteAddress: '127.0.0.2' })
+            await server.inject({ method: 'GET', url: '/auth?authToken=four&id=4&error=true', remoteAddress: '127.0.0.2' })
+            await server.inject({ method: 'GET', url: '/auth?authToken=five&id=4&error=true', remoteAddress: '127.0.0.2' })
+            await server.inject({ method: 'GET', url: '/auth?authToken=six&id=4&error=true', remoteAddress: '127.0.0.2' })
+
+            // token list is now over the default limit of 5
+            res = await server.inject({ method: 'GET', url: '/auth?authToken=seven&id=4&error=true', remoteAddress: '127.0.0.2' })
         });
 
         it('user with missing userAttribute', async () => {
@@ -626,6 +659,52 @@ describe('hapi-rate-limit', () => {
         });
     });
 
+    describe('disable authLimit', () => {
+        let server;
+
+        beforeEach(async () => {
+            server = Hapi.server({
+                autoListen: false
+            });
+
+            server.auth.scheme('trusty', () => {
+                return {
+                    authenticate: function(request, h) {
+                        return h.unauthenticated(Boom.unauthorized(), { credentials: {}, artifacts: request.query })
+                    }
+                };
+            });
+
+            server.auth.strategy('trusty', 'trusty');
+
+            await server.register([
+                {
+                    plugin: HapiRateLimit,
+                    options: {
+                        authLimit: false
+                    }
+                }
+            ]);
+            server.route(require('./test-routes'));
+            await server.initialize();
+        });
+
+
+        it('bad auth tokens', async () => {
+
+            let res
+            await server.inject({ method: 'GET', url: '/auth?authToken=one&id=3' })
+            await server.inject({ method: 'GET', url: '/auth?authToken=two&id=3' })
+            await server.inject({ method: 'GET', url: '/auth?authToken=three&id=3' })
+            await server.inject({ method: 'GET', url: '/auth?authToken=four&id=3' })
+            await server.inject({ method: 'GET', url: '/auth?authToken=five&id=3' })
+            await server.inject({ method: 'GET', url: '/auth?authToken=six&id=3' })
+
+            res = await server.inject({ method: 'GET', url: '/auth?authToken=seven&id=3' })
+            expect(res.statusCode).to.equal(401)
+        });
+    })
+
     describe('disabled routes', () => {
         let server;
 
@@ -932,6 +1011,7 @@ describe('hapi-rate-limit', () => {
             expect(res.headers['x-ratelimit-pathremaining']).to.equal(-1);
         });
     });
+
     describe('configured cache', () => {
         let server;
         const localIp = '127.0.0.1';
