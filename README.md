@@ -1,8 +1,5 @@
 # hapi-rate-limit
 
-[![Build Status](https://travis-ci.org/wraithgar/hapi-rate-limit.svg?branch=master)](http://travis-ci.org/wraithgar/hapi-rate-limit)
-[![Greenkeeper badge](https://badges.greenkeeper.io/wraithgar/hapi-rate-limit.svg)](https://greenkeeper.io/)
-
 Lead Maintainer: [Gar](https://github.com/wraithgar)
 
 ## Introduction
