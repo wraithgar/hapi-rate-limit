@@ -580,6 +580,66 @@ describe('hapi-rate-limit', () => {
       expect(res.headers['x-ratelimit-pathremaining']).to.equal(49)
       expect(res.headers['x-ratelimit-userremaining']).to.equal(299)
     })
+
+    it('runs out of pathLimit using params', async () => {
+      let res
+      res = await server.inject({
+        method: 'GET',
+        url: '/managePathParams/1'
+      })
+      expect(res.headers['x-ratelimit-pathremaining']).to.equal(1)
+
+      res = await server.inject({
+        method: 'GET',
+        url: '/managePathParams/1'
+      })
+      expect(res.headers['x-ratelimit-pathremaining']).to.equal(0)
+
+      res = await server.inject({
+        method: 'GET',
+        url: '/managePathParams/1'
+      })
+      expect(res.statusCode).to.equal(429)
+      expect(res.headers['x-ratelimit-pathremaining']).to.equal(-1)
+
+      res = await server.inject({
+        method: 'GET',
+        url: '/managePathParams/2'
+      })
+      expect(res.headers['x-ratelimit-pathremaining']).to.equal(1)
+
+      res = await server.inject({
+        method: 'GET',
+        url: '/managePathParams/2'
+      })
+      expect(res.headers['x-ratelimit-pathremaining']).to.equal(0)
+
+      res = await server.inject({
+        method: 'GET',
+        url: '/managePathParams/2'
+      })
+      expect(res.statusCode).to.equal(429)
+      expect(res.headers['x-ratelimit-pathremaining']).to.equal(-1)
+
+      res = await server.inject({
+        method: 'GET',
+        url: '/ignorePathParams/1'
+      })
+      expect(res.headers['x-ratelimit-pathremaining']).to.equal(1)
+
+      res = await server.inject({
+        method: 'GET',
+        url: '/ignorePathParams/2'
+      })
+      expect(res.headers['x-ratelimit-pathremaining']).to.equal(0)
+
+      res = await server.inject({
+        method: 'GET',
+        url: '/ignorePathParams/3'
+      })
+      expect(res.statusCode).to.equal(429)
+      expect(res.headers['x-ratelimit-pathremaining']).to.equal(-1)
+    })
   })
 
   describe('configured user limit', () => {
