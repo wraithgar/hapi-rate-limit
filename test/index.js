@@ -1072,21 +1072,12 @@ describe('hapi-rate-limit', () => {
     const localIp = '127.0.0.1'
 
     const configureWithCacheName = async cacheName => {
-      const userCache = { segment: 'default' }
-      const cache = { provider: require('@hapi/catbox-memory') }
+      server = Hapi.server({ autoListen: false })
 
-      if (cacheName) {
-        userCache.segment = cacheName
-        userCache.cache = cacheName
-
-        cache.name = cacheName
-      }
-
-      server = Hapi.server({
-        autoListen: false
+      server.cache.provision({
+        name: 'a-custom-cache-name',
+        provider: require('@hapi/catbox-memory').Engine
       })
-
-      server.cache.provision(cache)
 
       server.events.on({ name: 'request', channels: ['error'] }, (request, event) => {
         console.log(event.error)
@@ -1113,7 +1104,7 @@ describe('hapi-rate-limit', () => {
           plugin: HapiRateLimit,
           options: {
             addressOnly: true,
-            userCache,
+            userCache: { segment: 'a-custom-cache-name', cache: 'a-custom-cache-name' },
             userPathLimit: false,
             pathLimit: false
           }
@@ -1123,12 +1114,11 @@ describe('hapi-rate-limit', () => {
     }
 
     it('uses non-default hapi cache', async () => {
-      const cacheName = 'a-custom-cache-name'
-      await configureWithCacheName(cacheName)
+      await configureWithCacheName()
 
       const rateLimitCache = server.cache({
-        segment: cacheName,
-        cache: cacheName,
+        segment: 'a-custom-cache-name',
+        cache: 'a-custom-cache-name',
         shared: true
       })
       const defaultCache = server.cache({
