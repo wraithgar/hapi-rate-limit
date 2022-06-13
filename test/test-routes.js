@@ -313,5 +313,36 @@ module.exports = [
         }
       }
     }
+  },
+  {
+    method: 'GET',
+    path: '/managePathParams/{param}',
+    config: {
+      description: 'Route with params used by cache',
+      handler: function (request) {
+        return request.path
+      },
+      plugins: {
+        'hapi-rate-limit': {
+          pathLimit: 2
+        }
+      }
+    }
+  },
+  {
+    method: 'GET',
+    path: '/ignorePathParams/{param}',
+    config: {
+      description: 'Route with params ignored by cache',
+      handler: function (request) {
+        return request.path
+      },
+      plugins: {
+        'hapi-rate-limit': {
+          pathLimit: 2,
+          ignorePathParams: true
+        }
+      }
+    }
   }
 ]
