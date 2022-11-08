@@ -44,7 +44,7 @@
     ],
     "devDependencies": {
         "@hapi/code": "^9.0.0",
-        "@hapi/hapi": "^20.0.0",
+        "@hapi/hapi": "^21.0.0",
         "@hapi/lab": "^25.0.1",
         "git-validate": "^2.2.4",
         "standard": "^17.0.0"
