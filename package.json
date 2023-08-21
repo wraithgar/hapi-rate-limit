@@ -20,7 +20,7 @@
     "author": "Gar <gar+code@danger.computer>",
     "license": "MIT",
     "engines": {
-        "node": "^16.0.0 || ^18.0.0 || ^20.0.0"
+        "node": "^18.0.0 || ^20.0.0"
     },
     "bugs": {
         "url": "https://github.com/wraithgar/hapi-rate-limit/issues"
