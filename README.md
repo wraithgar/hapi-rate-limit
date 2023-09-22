@@ -46,6 +46,7 @@ Defaults are given here
 - `ipWhitelist`: `[]` array of IPs for whom to bypass rate limiting.  Note that a whitelisted IP would also bypass restrictions an authenticated user would otherwise have.
 - `trustProxy`: `false` If true, honor the `X-Forwarded-For` header.  See note below.
 - `getIpFromProxyHeader`: `undefined` a function which will extract the remote address from the `X-Forwarded-For` header. The default implementation takes the first entry.
+- `proxyHeaderName`: `X-Forwarded-For` name of the header to use for remote address lookup.
 - `limitExceededResponse`: `() => Boom.tooManyRequests('Rate limit exceeded');` a `function(request, h)` that returns a custom response to be used when the rate limit is hit. If the function returns a Boom error, it will be used. If it returns an object, the response will be 200 and the payload whatever the function returns.
 - `authLimit`: 5 number of total separate invalid auth attempts that can be made from any given IP. Once that limit has been reached the offending IP will be blocked before hapi's auth layer runs. Set to `false` to disable this feature.
 - `authToken`: `authToken` this is the attribute that will be looked for either in auth artifacts, or in boom data for thrown errors to rate limit invalid auth attempts.  For instance you would set `artifacts.authToken` to the value of `headers.authorization` to rate limit invalid authorization headers.

@@ -499,6 +499,26 @@ describe('hapi-rate-limit', () => {
       expect(res.headers['x-ratelimit-userremaining']).to.equal(299)
     })
 
+    it('route configured trustProxy with custom header', async () => {
+      let res
+      res = await server.inject({
+        method: 'GET',
+        url: '/trustProxyCustomHeader',
+        headers: { 'x-something-else': '127.0.0.2, 127.0.0.1' }
+      })
+      expect(res.headers['x-ratelimit-userremaining']).to.equal(299)
+
+      res = await server.inject({
+        method: 'GET',
+        url: '/trustProxyCustomHeader',
+        headers: { 'x-something-else': '127.0.0.2, 127.0.0.1' }
+      })
+      expect(res.headers['x-ratelimit-userremaining']).to.equal(298)
+
+      res = await server.inject({ method: 'GET', url: '/trustProxy' })
+      expect(res.headers['x-ratelimit-userremaining']).to.equal(299)
+    })
+
     it('route configured ipWhitelist', async () => {
       const res = await server.inject({
         method: 'GET',
