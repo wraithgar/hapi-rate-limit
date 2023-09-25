@@ -268,6 +268,22 @@ module.exports = [
   },
   {
     method: 'GET',
+    path: '/trustProxyCustomHeader',
+    config: {
+      description: 'Route with trustProxy set and custom header name',
+      handler: function (request) {
+        return request.path
+      },
+      plugins: {
+        'hapi-rate-limit': {
+          trustProxy: true,
+          proxyHeaderName: 'x-something-else'
+        }
+      }
+    }
+  },
+  {
+    method: 'GET',
     path: '/ipWhitelist',
     config: {
       description: 'Route with an ipWhitelist',
