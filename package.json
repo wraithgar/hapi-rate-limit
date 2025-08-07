@@ -20,7 +20,7 @@
     "author": "Gar <gar+code@danger.computer>",
     "license": "MIT",
     "engines": {
-        "node": "^18.0.0 || ^20.0.0"
+        "node": ">=20.0.0"
     },
     "bugs": {
         "url": "https://github.com/wraithgar/hapi-rate-limit/issues"
@@ -33,20 +33,20 @@
         "@hapi/hapi": ">=18.0.0"
     },
     "dependencies": {
-        "@hapi/boom": "^10.0.0",
-        "@hapi/catbox-memory": "^6.0.0",
-        "@hapi/hoek": "^10.0.0",
-        "joi": "^17.4.0"
+        "@hapi/boom": "^10.0.1",
+        "@hapi/catbox-memory": "^6.0.2",
+        "@hapi/hoek": "^11.0.7",
+        "joi": "^18.0.0"
     },
     "files": [
         "index.js",
         "lib"
     ],
     "devDependencies": {
-        "@hapi/code": "^9.0.0",
-        "@hapi/hapi": "^21.0.0",
-        "@hapi/lab": "^25.0.1",
+        "@hapi/code": "^9.0.3",
+        "@hapi/hapi": "^21.4.2",
+        "@hapi/lab": "^26.0.0",
         "git-validate": "^2.2.4",
-        "standard": "^17.0.0"
+        "standard": "^17.1.2"
     }
 }
